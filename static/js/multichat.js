@@ -31,9 +31,11 @@ function addToConversation(who, msgType, content) {
     document.getElementById('conversation').innerHTML +=
     "<b>" + who + ":</b>&nbsp;" + content + "<br />";
     
-    elements.push( { group: "nodes", data: { id: who } },
+    elements.push( 
         { group: "nodes", data: { id: content }, label: content },
-        { group: "edges", data: { id: who + content, source: who, target: content } })
+        { group: "edges", data: { id: who + content, source: content, target: who } },
+        { group: "edges", data: { id: "Me" + content, source: "Me", target: content } }
+        )
         
         
         generateGraph(elements);
@@ -49,12 +51,22 @@ function connect() {
 
 
 function convertListToButtons (roomName, occupants, isPrimary) {
+  
+  
+       
+  
     var otherClientDiv = document.getElementById('otherClients');
     while (otherClientDiv.hasChildNodes()) {
         otherClientDiv.removeChild(otherClientDiv.lastChild);
     }
 
     for(var easyrtcid in occupants) {
+      
+      elements.push( 
+        { group: "nodes", data: { id: "Me" } },
+         { group: "nodes", data: { id: easyrtc.idToName(easyrtcid) } },
+      )
+      
         var button = document.createElement('button');
         button.onclick = function(easyrtcid) {
             return function() {
@@ -79,7 +91,7 @@ function sendStuffWS(otherEasyrtcid) {
     }
 
     easyrtc.sendDataWS(otherEasyrtcid, "message",  text);
-    addToConversation("Me", "message", text);
+    addToConversation(otherEasyrtcid, "message", text);
     document.getElementById('sendMessageText').value = "";
 }
 
@@ -215,6 +227,18 @@ var cy = cytoscape({
   
 });
 
+
+
+cy.on('click', 'node', function(evt){
+  var node = evt.target;
+  
+  
+                sendStuffWS(node.id());
+  
+ 
+});
+
 }
+
 
   
