@@ -30,6 +30,7 @@ function addToConversation(who, msgType, content) {
     content = content.replace(/\n/g, '<br />');
     document.getElementById('conversation').innerHTML +=
     "<b>" + who + ":</b>&nbsp;" + content + "<br />";
+   
     
     elements.push( 
         { group: "nodes", data: { id: content }, label: content },
@@ -59,12 +60,14 @@ function convertListToButtons (roomName, occupants, isPrimary) {
     while (otherClientDiv.hasChildNodes()) {
         otherClientDiv.removeChild(otherClientDiv.lastChild);
     }
+   
 
     for(var easyrtcid in occupants) {
+    
       
       elements.push( 
         { group: "nodes", data: { id: "Me" } },
-         { group: "nodes", data: { id: easyrtc.idToName(easyrtcid) } },
+        { group: "nodes", data: { id: easyrtc.idToName(easyrtcid) } },
       )
       
         var button = document.createElement('button');
@@ -105,6 +108,9 @@ function loginSuccess(easyrtcid) {
 function loginFailure(errorCode, message) {
     easyrtc.showError(errorCode, message);
 }
+
+
+
 
 var elements = [ // list of graph elements to start with
     
