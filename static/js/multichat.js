@@ -9,9 +9,7 @@ function addToConversation(who, msgType, dataString) {
 
     var data = JSON.parse(dataString);
     var content = data.content;
-    var edge;
 
-    console.log(data);
     // Escape html special characters, then add linefeeds.
     content = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     content = content.replace(/\n/g, '<br />');
@@ -84,11 +82,13 @@ function sendStuffWS(otherEasyrtcid) {
         return;
     }
 
+
+
     var data = {
         messageId : generateMessageId(selfEasyrtcid, text),
         author: selfEasyrtcid,
         date: new Date(),
-        parentMessageId: null,
+        parentMessageId: getParentMessageId(),
         content: text
     };
 
@@ -116,7 +116,18 @@ function loginFailure(errorCode, message) {
     return author + "_" +  message.substr(2,5) + "_" + Math.random().toString(36).substr(2, 9);
  }
 
+//temporary parent message management
+var parentMessageId = null;
 
+function getParentMessageId() {
+    if (parentMessageId !== null) {
+        var result = parentMessageId;
+        parentMessageId = null;
+        return result;
+    } else {
+        return null;
+    }
+}
 
 
 //
@@ -259,8 +270,9 @@ function generateGraph(elements) {
     cy.on('click', 'node', function (evt) {
         var node = evt.target;
 
+        parentMessageId = node.id();
 
-        sendStuffWS(node.id());
+       // sendStuffWS(node.id());
 
 
     });
