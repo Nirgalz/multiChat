@@ -1,0 +1,9 @@
+#cy {
+    width: 900px;
+    height: 600px;
+    display: block;
+}
+
+#sendMessageText {
+    width: 100%;
+}
