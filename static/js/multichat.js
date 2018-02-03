@@ -18,20 +18,20 @@ function addToConversation(who, msgType, dataString) {
     document.getElementById('conversation').innerHTML +=
         "<b>" + who + ":</b>&nbsp;" + content + "<br />";
 
+    //adds message node connected to author
+    elements.push(
+        {group: "nodes", data: {id: data.messageId, label: content}},
+        {group: "edges", data: {id: data.author + data.messageId, source: data.messageId, target: data.author}}
+    );
+
     //links to parents message if not null
     if (data.parentMessageId !== null) {
-        edge = {id: who + data.parentMessageId, target: data.parentMessageId}
-    } else {
-        edge = {id: data.messageId + who, target: who}
+        elements.push(
+            {group: "edges", data: {id: who + data.parentMessageId, source: data.messageId, target: data.parentMessageId}},
+        )
     }
 
-    elements.push(
-        {group: "nodes", data: {id: data.messageId}, label: content},
-        {group: "edges", data: {id: edge.id, source: data.messageId, target: edge.target}}
-       // {group: "edges", data: {id: "Me" + content, source: "Me", target: content}}
-    )
-
-
+    //resets graph
     generateGraph(elements);
 
 }
@@ -57,8 +57,8 @@ function convertListToButtons(roomName, occupants, isPrimary) {
 
 
         elements.push(
-            {group: "nodes", data: {id: "Me"}},
-            {group: "nodes", data: {id: easyrtc.idToName(easyrtcid)}}
+            {group: "nodes", data: {id: easyrtc.idToName(selfEasyrtcid), label: easyrtc.idToName(selfEasyrtcid)}},
+            {group: "nodes", data: {id: easyrtc.idToName(easyrtcid), label: easyrtc.idToName(selfEasyrtcid)}}
         )
 
         var button = document.createElement('button');
@@ -139,7 +139,8 @@ function generateGraph(elements) {
                 selector: 'node',
                 style: {
                     'background-color': '#666',
-                    'label': 'data(id)'
+                    'label': 'data(label)'
+
                 }
             },
 
