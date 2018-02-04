@@ -9,10 +9,11 @@
   },
   "dependencies": {
     "cytoscape": "latest",
-    "easyrtc": "latest",
+    "easyrtc": "^1.1.0",
     "express": "latest",
     "serve-static": "latest",
-    "socket.io": "latest"
+    "socket.io": "latest",
+    "uniqid": "^4.1.1"
   },
   "license": "BSD2",
   "engines": {

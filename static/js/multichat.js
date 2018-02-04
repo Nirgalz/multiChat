@@ -13,6 +13,9 @@ function addToConversation(who, msgType, dataString) {
     // Escape html special characters, then add linefeeds.
     content = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     content = content.replace(/\n/g, '<br />');
+    
+    //TODO use DOM elements directly, avoid using strings to construct this
+    //TODO use scrollback terminal with fixed limit lines
     document.getElementById('conversation').innerHTML +=
         "<b>" + who + ":</b>&nbsp;" + content + "<br />";
 
@@ -71,7 +74,7 @@ function convertListToButtons(roomName, occupants, isPrimary) {
         otherClientDiv.appendChild(button);
     }
     if (!otherClientDiv.hasChildNodes()) {
-        otherClientDiv.innerHTML = "<em>Nobody else logged in to talk to...</em>";
+        otherClientDiv.innerHTML = "<em>ALONE</em>";
     }
 }
 
@@ -100,7 +103,7 @@ function sendStuffWS(otherEasyrtcid) {
 
 function loginSuccess(easyrtcid) {
     selfEasyrtcid = easyrtcid;
-    document.getElementById("iam").innerHTML = "I am " + easyrtcid;
+    document.getElementById("conversation").innerHTML = "I am " + easyrtcid;
 }
 
 
@@ -113,6 +116,7 @@ function loginFailure(errorCode, message) {
 //
 
  function generateMessageId(author, message) {
+     //TODO real UUID
     return author + "_" +  message.substr(2,5) + "_" + Math.random().toString(36).substr(2, 9);
  }
 
@@ -150,6 +154,7 @@ function generateGraph(elements) {
                 selector: 'node',
                 style: {
                     'background-color': '#666',
+                    'color': '#888',
                     'label': 'data(label)'
 
                 }
