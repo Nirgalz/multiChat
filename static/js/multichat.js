@@ -59,7 +59,7 @@ function convertListToButtons(roomName, occupants, isPrimary) {
 
         elements.push(
             {group: "nodes", data: {id: easyrtc.idToName(selfEasyrtcid), label: easyrtc.idToName(selfEasyrtcid)}},
-            {group: "nodes", data: {id: easyrtc.idToName(easyrtcid), label: easyrtc.idToName(selfEasyrtcid)}}
+            {group: "nodes", data: {id: easyrtc.idToName(easyrtcid), label: easyrtc.idToName(easyrtcid)}}
         )
 
         var button = document.createElement('button');
@@ -168,6 +168,15 @@ function generateGraph(elements) {
                     'target-arrow-color': '#ccc',
                     'target-arrow-shape': 'triangle'
                 }
+            },
+
+            {
+                selector: '.clickedNode',
+                style : {
+                    'background-color': 'brown',
+                    'shape': 'rectangle'
+                }
+
             }
         ],
 
@@ -269,13 +278,22 @@ function generateGraph(elements) {
         }
 
 
-    });
+    })
+        // .style().selector(":active")
+        // .css({
+        //     "overlay-color": "black",
+        //     "overlay-padding": 10,
+        //     "overlay-opacity": 0.25 // and others… if the dev wants
+        // });
 
 
     cy.on('click', 'node', function (evt) {
         var node = evt.target;
 
+        cy.$('.' + node.id()).addClass('.clickedNode');
+
         parentMessageId = node.id();
+        console.log(node);
 
        // sendStuffWS(node.id());
 
