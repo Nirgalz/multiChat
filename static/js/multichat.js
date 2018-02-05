@@ -9,7 +9,7 @@ function addToConversation(who, msgType, dataString) {
     var data = JSON.parse(dataString);
     var content = data.content;
     var nodeColor;
-
+    
     // Escape html special characters, then add linefeeds.
     content = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     content = content.replace(/\n/g, '<br />');
@@ -41,10 +41,11 @@ function addToConversation(who, msgType, dataString) {
     //links to parents message if not null
     if (data.parentMessageId !== null) {
         elements.push(
-            {group: "edges", data: {id: who + data.parentMessageId, source: data.messageId, target: data.parentMessageId}},
+            {group: "edges", data: {id: who + '_' + data.parentMessageId, source: data.messageId, target: data.parentMessageId}},
         )
     }
 
+console.log(elements);
     //resets graph
     generateGraph(elements);
 
@@ -59,7 +60,7 @@ function connect() {
 
 
 function convertListToButtons(roomName, occupants, isPrimary) {
-
+    users = [];
 
     var otherClientDiv = document.getElementById('otherClients');
     while (otherClientDiv.hasChildNodes()) {
@@ -67,12 +68,11 @@ function convertListToButtons(roomName, occupants, isPrimary) {
     }
     
     //adds self node
-    elements.push(
+    users.push(
             {group: "nodes", data: {id: easyrtc.idToName(selfEasyrtcid), label: easyrtc.idToName(selfEasyrtcid)},
               style: {
                     'background-color': '#C70039',
-                    'color': '#888',
-                    'label': 'data(label)'
+                    'color': '#888'
 
                 }
             });
@@ -80,13 +80,15 @@ function convertListToButtons(roomName, occupants, isPrimary) {
     for (var easyrtcid in occupants) {
 
 
-        elements.push(
+        users.push(
             
-            {group: "nodes", data: {id: easyrtc.idToName(easyrtcid), label: easyrtc.idToName(easyrtcid)},
-              style: {
+            {group: "nodes", data: {
+                id: easyrtc.idToName(easyrtcid), 
+                label: easyrtc.idToName(easyrtcid)
+            },
+                style: {
                     'background-color': '#2ecc71',
-                    'color': '#888',
-                    'label': 'data(label)'
+                    'color': '#888'
 
                 }}
         )
@@ -117,7 +119,7 @@ function sendStuffWS(otherEasyrtcid) {
 
 
     var data = {
-        messageId : generateMessageId(selfEasyrtcid, text),
+        messageId : generateMessageId(easyrtc.idToName(selfEasyrtcid), text),
         author: selfEasyrtcid,
         date: new Date(),
         parentMessageId: getParentMessageId(),
@@ -167,16 +169,17 @@ function getParentMessageId() {
 // Graph generation
 //
 
-var elements = [ // list of graph elements to start with
+//list of users
+var users = [];
+// list of graph elements
+var elements = [];
 
-]
 
-
-function generateGraph(elements) {
+function generateGraph() {
     var cy = cytoscape({
         container: document.getElementById('cy'), // container to render in
 
-        elements: elements,
+        elements: elements.concat(users),
 
         style: [ // the stylesheet for the graph
             {
