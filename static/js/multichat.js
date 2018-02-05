@@ -4,6 +4,8 @@
 //
 var selfEasyrtcid = "";
 
+var socketIo = io.connect('/');
+
 function addToConversation(who, msgType, dataString) {
 
     var data = JSON.parse(dataString);
@@ -45,7 +47,6 @@ function addToConversation(who, msgType, dataString) {
         )
     }
 
-console.log(elements);
     //resets graph
     generateGraph(elements);
 
@@ -115,9 +116,12 @@ function sendStuffWS(otherEasyrtcid) {
     if (text.replace(/\s/g, "").length === 0) { // Don't send just whitespace
         return;
     }
+//attempt to manage UUIDs through sockets
+socketIo.emit('reqID', {message: 'ble'});
 
-
-
+socketIo.on('UUID', function(data){
+    console.log(data.UUID);
+})
     var data = {
         messageId : generateMessageId(easyrtc.idToName(selfEasyrtcid), text),
         author: selfEasyrtcid,
