@@ -1,41 +1,41 @@
-
 //
 //easyRTC stuff
 //
 var selfEasyrtcid = "";
 
-var socketIo = io.connect('/');
+var socketIo = io();
 
 function addToConversation(who, msgType, dataString) {
 
     var data = JSON.parse(dataString);
     var content = data.content;
     var nodeColor;
-    
+
     // Escape html special characters, then add linefeeds.
     content = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     content = content.replace(/\n/g, '<br />');
-    
+
     //TODO use DOM elements directly, avoid using strings to construct this
     //TODO use scrollback terminal with fixed limit lines
     document.getElementById('conversation').innerHTML +=
         "<b>" + who + ":</b>&nbsp;" + content + "<br />";
-        
-        
+
+
     //TODO add colors for more variations and more users
     //color depending on the author
     if (data.author === selfEasyrtcid) {
-      nodeColor = "#FF5733";
+        nodeColor = "#FF5733";
     } else {
-      nodeColor = "#abebc6";
+        nodeColor = "#abebc6";
     }
 
     //adds message node connected to author
     elements.push(
-        {group: "nodes", data: {id: data.messageId, label: content},
-          style: {
-            'background-color': nodeColor
-          }
+        {
+            group: "nodes", data: {id: data.messageId, label: content},
+            style: {
+                'background-color': nodeColor
+            }
         },
         {group: "edges", data: {id: data.author + data.messageId, source: data.messageId, target: data.author}}
     );
@@ -43,7 +43,10 @@ function addToConversation(who, msgType, dataString) {
     //links to parents message if not null
     if (data.parentMessageId !== null) {
         elements.push(
-            {group: "edges", data: {id: who + '_' + data.parentMessageId, source: data.messageId, target: data.parentMessageId}},
+            {
+                group: "edges",
+                data: {id: who + '_' + data.parentMessageId, source: data.messageId, target: data.parentMessageId}
+            }
         )
     }
 
@@ -59,40 +62,44 @@ function connect() {
     easyrtc.connect("easyrtc.instantMessaging", loginSuccess, loginFailure);
 }
 
-
+//TODO refactor this
 function convertListToButtons(roomName, occupants, isPrimary) {
+
+    //resets users var each time the room is updated
     users = [];
 
     var otherClientDiv = document.getElementById('otherClients');
     while (otherClientDiv.hasChildNodes()) {
         otherClientDiv.removeChild(otherClientDiv.lastChild);
     }
-    
+
     //adds self node
     users.push(
-            {group: "nodes", data: {id: easyrtc.idToName(selfEasyrtcid), label: easyrtc.idToName(selfEasyrtcid)},
-              style: {
-                    'background-color': '#C70039',
-                    'color': '#888'
+        {
+            group: "nodes", data: {id: easyrtc.idToName(selfEasyrtcid), label: easyrtc.idToName(selfEasyrtcid)},
+            style: {
+                'background-color': '#C70039',
+                'color': '#888'
 
-                }
-            });
+            }
+        });
 
     for (var easyrtcid in occupants) {
 
-
+        //add all other users in users var
         users.push(
-            
-            {group: "nodes", data: {
-                id: easyrtc.idToName(easyrtcid), 
+            {
+                group: "nodes", data: {
+                id: easyrtc.idToName(easyrtcid),
                 label: easyrtc.idToName(easyrtcid)
             },
                 style: {
                     'background-color': '#2ecc71',
                     'color': '#888'
 
-                }}
-        )
+                }
+            }
+        );
 
         var button = document.createElement('button');
         button.onclick = function (easyrtcid) {
@@ -117,13 +124,13 @@ function sendStuffWS(otherEasyrtcid) {
         return;
     }
 //attempt to manage UUIDs through sockets
-socketIo.emit('reqID', {message: 'ble'});
+    socketIo.emit('reqID', {message: 'ble'});
 
-socketIo.on('UUID', function(data){
-    console.log(data.UUID);
-})
+    socketIo.on('UUID', function (data) {
+        console.log(data.UUID);
+    });
     var data = {
-        messageId : generateMessageId(easyrtc.idToName(selfEasyrtcid), text),
+        messageId: generateMessageId(easyrtc.idToName(selfEasyrtcid), text),
         author: selfEasyrtcid,
         date: new Date(),
         parentMessageId: getParentMessageId(),
@@ -150,10 +157,10 @@ function loginFailure(errorCode, message) {
 // Tools
 //
 
- function generateMessageId(author, message) {
-     //TODO real UUID
-    return author + "_" +  message.substr(2,5) + "_" + Math.random().toString(36).substr(2, 9);
- }
+function generateMessageId(author, message) {
+    //TODO real UUID
+    return author + "_" + message.substr(2, 5) + "_" + Math.random().toString(36).substr(2, 9);
+}
 
 //temporary parent message management
 var parentMessageId = null;
@@ -208,7 +215,7 @@ function generateGraph() {
 
             {
                 selector: '.clickedNode',
-                style : {
+                style: {
                     'background-color': 'brown',
                     'shape': 'rectangle'
                 }
@@ -315,12 +322,12 @@ function generateGraph() {
 
 
     })
-        // .style().selector(":active")
-        // .css({
-        //     "overlay-color": "black",
-        //     "overlay-padding": 10,
-        //     "overlay-opacity": 0.25 // and others… if the dev wants
-        // });
+    // .style().selector(":active")
+    // .css({
+    //     "overlay-color": "black",
+    //     "overlay-padding": 10,
+    //     "overlay-opacity": 0.25 // and others… if the dev wants
+    // });
 
 
     cy.on('click', 'node', function (evt) {
@@ -329,9 +336,9 @@ function generateGraph() {
         cy.$('.' + node.id()).addClass('.clickedNode');
 
         parentMessageId = node.id();
-      
 
-       // sendStuffWS(node.id());
+
+        // sendStuffWS(node.id());
 
 
     });

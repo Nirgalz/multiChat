@@ -18,23 +18,17 @@ app.use(serveStatic('static', {'index': ['index.html']}));
 // Start Express http server on port 8080
 var webServer = http.createServer(app).listen(8080);
 
-//attempt to manage UUIDs through sockets
-io.on('connection', function(socket) {
-    console.log('hello')
-    socketIo.on('reqID', function(data) {
-    console.log(data);
-    socket.emit('UUID', { UUID: uuidV4() });
-});
-}
-    
-
-
-
-
-
 // Start Socket.io so it attaches itself to Express server
 var socketServer = socketIo.listen(webServer, {"log level": 1});
 
+//attempt to manage UUIDs through sockets
+socketServer.on('connection', function (socket) {
+    console.log('hello')
+    socketServer.on('reqID', function (data) {
+        console.log(data);
+        socket.emit('UUID', {UUID: uuidV4()});
+    });
+});
 easyrtc.setOption("logLevel", "debug");
 
 // Overriding the default easyrtcAuth listener, only so we can directly access its callback
