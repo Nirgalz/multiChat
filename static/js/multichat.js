@@ -9,6 +9,7 @@ function addToConversation(who, msgType, dataString) {
 
     var data = JSON.parse(dataString);
     var content = data.content;
+    var nodeColor;
 
     // Escape html special characters, then add linefeeds.
     content = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -18,10 +19,23 @@ function addToConversation(who, msgType, dataString) {
     //TODO use scrollback terminal with fixed limit lines
     document.getElementById('conversation').innerHTML +=
         "<b>" + who + ":</b>&nbsp;" + content + "<br />";
+        
+        
+    //TODO add colors for more variations and more users
+    //color depending on the author
+    if (data.author === selfEasyrtcid) {
+      nodeColor = "#FF5733";
+    } else {
+      nodeColor = "#abebc6";
+    }
 
     //adds message node connected to author
     elements.push(
-        {group: "nodes", data: {id: data.messageId, label: content}},
+        {group: "nodes", data: {id: data.messageId, label: content},
+          style: {
+            'background-color': nodeColor
+          }
+        },
         {group: "edges", data: {id: data.author + data.messageId, source: data.messageId, target: data.author}}
     );
 
@@ -52,14 +66,30 @@ function convertListToButtons(roomName, occupants, isPrimary) {
     while (otherClientDiv.hasChildNodes()) {
         otherClientDiv.removeChild(otherClientDiv.lastChild);
     }
+    
+    //adds self node
+    elements.push(
+            {group: "nodes", data: {id: easyrtc.idToName(selfEasyrtcid), label: easyrtc.idToName(selfEasyrtcid)},
+              style: {
+                    'background-color': '#C70039',
+                    'color': '#888',
+                    'label': 'data(label)'
 
+                }
+            });
 
     for (var easyrtcid in occupants) {
 
 
         elements.push(
-            {group: "nodes", data: {id: easyrtc.idToName(selfEasyrtcid), label: easyrtc.idToName(selfEasyrtcid)}},
-            {group: "nodes", data: {id: easyrtc.idToName(easyrtcid), label: easyrtc.idToName(easyrtcid)}}
+            
+            {group: "nodes", data: {id: easyrtc.idToName(easyrtcid), label: easyrtc.idToName(easyrtcid)},
+              style: {
+                    'background-color': '#2ecc71',
+                    'color': '#888',
+                    'label': 'data(label)'
+
+                }}
         )
 
         var button = document.createElement('button');
@@ -293,7 +323,7 @@ function generateGraph(elements) {
         cy.$('.' + node.id()).addClass('.clickedNode');
 
         parentMessageId = node.id();
-        console.log(node);
+      
 
        // sendStuffWS(node.id());
 
