@@ -3,15 +3,22 @@
 <head>
     <title>Mutichachat</title>
     <link rel="stylesheet" type="text/css" href="/css/style.css"/>
+    
+    
+    <!-- jquery cdn
+    TODO make it local with npm-->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
     <!-- Assumes global locations for socket.io.js and easyrtc.js -->
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="/easyrtc/easyrtc.js"></script>
     <script type="text/javascript" src="/js/cytoscape.js"></script>
+    
 
 </head>
 <body onload="connect()">
-<div id="receiveMessageArea" class="panel">
+  <button id="toggleConsole">show/hide console</button>
+<div id="receiveMessageArea" class="panel" style="display: none">
     <div id="conversation"></div>
 </div>
 
@@ -24,8 +31,6 @@
 </body>
 
 <script type="text/javascript" src="js/multichat.js"></script>
-<script>
-
-</script>
+<script type="text/javascript" src="/js/script.js"></script>
 </html>
 
