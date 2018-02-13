@@ -6,6 +6,7 @@ var selfEasyrtcid = "";
 var socketIo = io();
 
 function addToConversation(who, msgType, dataString) {
+    
 
     var data = JSON.parse(dataString);
     var content = data.content;
@@ -30,7 +31,7 @@ function addToConversation(who, msgType, dataString) {
     }
     
     //vis.js
-    addNode(data.messageId, content, nodeColor);
+    addNode(data.messageId, content, nodeColor, true);
 
     
 
@@ -62,6 +63,8 @@ function addToConversation(who, msgType, dataString) {
 
     //resets graph
     //generateGraph(elements);
+    console.log(nodes);
+
 
 }
 
@@ -96,7 +99,7 @@ function convertListToButtons(roomName, occupants, isPrimary) {
         
         //vis.js
        
-            addNode(easyrtc.idToName(selfEasyrtcid), "Me", '#C70039')
+            addNode(easyrtc.idToName(selfEasyrtcid), "Me", '#C70039', false)
         
         
     
@@ -106,7 +109,7 @@ function convertListToButtons(roomName, occupants, isPrimary) {
         
         //vis.js
       
-            addNode(easyrtc.idToName(easyrtcid), easyrtc.idToName(easyrtcid), '#2ecc71')
+            addNode(easyrtc.idToName(easyrtcid), easyrtc.idToName(easyrtcid), '#2ecc71', false)
         
     
 
@@ -240,13 +243,18 @@ $(function(){
 
 //functions
 //adds a node
-function addNode(id, label, style) {
+function addNode(id, label, style, physics) {
             try {
-                nodes.add({
+                // will not try to make an already existing node :
+                if (nodes._data[id] === undefined) {
+                    nodes.add({
                     id: id,
                     label: label,
-                    color: style
+                    color: style,
+                    physics: true
                 });
+                }
+                
             }
             catch (err) {
                 alert(err);
