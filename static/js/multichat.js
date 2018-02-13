@@ -51,7 +51,7 @@ function addToConversation(who, msgType, dataString) {
 
     //links to parents message if not null
     if (data.parentMessageId !== null) {
-        addEdge(who + '_' + data.parentMessageId, data.messageId, data.parentMessageId)
+        addEdge(getDate() + '_' + who + '_' + data.parentMessageId, data.messageId, data.parentMessageId)
         
         // elements.push(
         //     {
@@ -184,9 +184,13 @@ function loginFailure(errorCode, message) {
 // Tools
 //
 
+function getDate(){
+    return new Date().getTime();
+}
+
 function generateMessageId(author, message) {
     //TODO real UUID
-    return author + "_" + message.substr(2, 5) + "_" + Math.random().toString(36).substr(2, 9);
+    return getDate()+ "_" + author + "_" + message.substr(2, 5) + "_" + Math.random().toString(36).substr(2, 9);
 }
 
 //temporary parent message management
