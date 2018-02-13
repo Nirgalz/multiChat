@@ -5,6 +5,10 @@ var serveStatic = require('serve-static');  // serve static files
 var socketIo = require("socket.io");        // web socket external module
 var easyrtc = require("easyrtc");           // EasyRTC external module
 const uuidV4 = require('uuid/v4');
+var PouchDB = require('pouchdb');
+PouchDB.plugin(require('pouchdb-find'));
+
+
 
 var cytoscape = require('cytoscape');       //cytoscape external module
 
