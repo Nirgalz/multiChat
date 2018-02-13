@@ -28,6 +28,9 @@ function addToConversation(who, msgType, dataString) {
     } else {
         nodeColor = "#abebc6";
     }
+    
+    //vis.js
+    addNode(data.messageId, content);
 
     //adds message node connected to author
     elements.push(
@@ -51,7 +54,7 @@ function addToConversation(who, msgType, dataString) {
     }
 
     //resets graph
-    generateGraph(elements);
+    //generateGraph(elements);
 
 }
 
@@ -83,8 +86,20 @@ function convertListToButtons(roomName, occupants, isPrimary) {
 
             }
         });
+        
+        //vis.js
+        // if (nodes!== undefined){
+        //     addNode(easyrtc.idToName(selfEasyrtcid), easyrtc.idToName(selfEasyrtcid))
+        // }
+        
 
     for (var easyrtcid in occupants) {
+        
+        //vis.js
+        // if (nodes !== undefined) {
+        //     addNode(easyrtc.idToName(easyrtcid), easyrtc.idToName(easyrtcid))
+        // }
+        
 
         //add all other users in users var
         users.push(
@@ -180,6 +195,111 @@ function getParentMessageId() {
 // Graph generation
 //
 
+
+//Tests with vis.js
+var nodes;
+var edges;
+$(function(){
+    nodes = new vis.DataSet([
+    {id: 1, label: 'Node 1'}
+    // {id: 2, label: 'Node 2'},
+    // {id: 3, label: 'Node 3'},
+    // {id: 4, label: 'Node 4'},
+    // {id: 5, label: 'Node 5'}
+  ]);
+
+  // create an array with edges
+  edges = new vis.DataSet([
+    // {from: 1, to: 3},
+    // {from: 1, to: 2},
+    // {from: 2, to: 4},
+    // {from: 2, to: 5},
+    // {from: 3, to: 3}
+  ]);
+
+  // create a network
+  var container = document.getElementById('cy');
+  var data = {
+    nodes: nodes,
+    edges: edges
+  };
+  var options = {};
+  var network = new vis.Network(container, data, options);
+})
+
+//functions
+//adds a node
+function addNode(id, label) {
+            try {
+                nodes.add({
+                    id: id,
+                    label: label
+                });
+            }
+            catch (err) {
+                alert(err);
+            }
+        }
+
+function updateNode(id, label) {
+            try {
+                nodes.update({
+                    id: id,
+                    label: label
+                });
+            }
+            catch (err) {
+                alert(err);
+            }
+        }
+        function removeNode(id) {
+            try {
+                nodes.remove({id: id});
+            }
+            catch (err) {
+                alert(err);
+            }
+        }
+
+        function addEdge(id, from, to) {
+            try {
+                edges.add({
+                    id: id,
+                    from: from,
+                    to: to
+                });
+            }
+            catch (err) {
+                alert(err);
+            }
+        }
+        function updateEdge(id, from, to) {
+            try {
+                edges.update({
+                    id: id,
+                    from: from,
+                    to: to
+                });
+            }
+            catch (err) {
+                alert(err);
+            }
+        }
+        function removeEdge(id) {
+            try {
+                edges.remove({id: id});
+            }
+            catch (err) {
+                alert(err);
+            }
+        }
+
+
+
+
+
+
+
 //list of users
 var users = [];
 // list of graph elements
@@ -188,7 +308,7 @@ var elements = [];
 
 function generateGraph() {
     var cy = cytoscape({
-        container: document.getElementById('cy'), // container to render in
+        //container: document.getElementById('cy'), // container to render in
 
         elements: elements.concat(users),
 

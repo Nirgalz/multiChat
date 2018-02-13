@@ -13,7 +13,8 @@
     "express": "latest",
     "serve-static": "latest",
     "socket.io": "latest",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "vis": "^4.21.0"
   },
   "license": "BSD2",
   "engines": {
