@@ -53,16 +53,54 @@ function convertListToButtons(roomName, occupants, isPrimary) {
     }
 
     //node color
-    var nodeColor =  "#" +intToRGB(hashCode(data.author));
+    var nodeColor =  "#" +intToRGB(hashCode(easyrtc.idToName(selfEasyrtcid)));
 
-    //adds self node
 
-    addNode(easyrtc.idToName(selfEasyrtcid), "Me", nodeColor, false);
+        if (nodes._data[easyrtc.idToName(selfEasyrtcid)] === undefined) {
+            try {
+                nodes.add({
+                    id: easyrtc.idToName(selfEasyrtcid),
+                    label: "Me",
+                    shape: "icon",
+                    icon: {
+                        face: 'FontAwesome',
+                        code: '\uf007',
+                        size: 50,
+                        color: nodeColor
+                    }
+                });
+            }
+
+            catch (err) {
+                alert(err);
+            }
+        }
+
+    //addNode(easyrtc.idToName(selfEasyrtcid), "Me", nodeColor, false);
 
 
     for (var easyrtcid in occupants) {
+        nodeColor =  "#" +intToRGB(hashCode(easyrtc.idToName(easyrtcid)));
+        if (nodes._data[easyrtc.idToName(easyrtcid)] === undefined) {
+            try {
+                nodes.add({
+                    id: easyrtc.idToName(easyrtcid),
+                    label: easyrtc.idToName(easyrtcid),
+                    shape: "icon",
+                    icon: {
+                        face: 'FontAwesome',
+                        code: '\uf007',
+                        size: 50,
+                        color: nodeColor
+                    }
+                });
+            }
 
-        addNode(easyrtc.idToName(easyrtcid), easyrtc.idToName(easyrtcid), nodeColor, false);
+            catch (err) {
+                alert(err);
+            }
+        }
+        //addNode(easyrtc.idToName(easyrtcid), easyrtc.idToName(easyrtcid), nodeColor, false);
 
 
         var button = document.createElement('button');
