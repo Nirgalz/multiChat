@@ -293,7 +293,7 @@ function drawFromLocalDB() {
         var nodes = response;
         for (var i = 0 ; i < nodes.rows.length ; i ++) {
             var data = nodes.rows[i].doc.data;
-            var nodeColor = intToRGB(hashCode(data.author));
+            var nodeColor =  "#" +intToRGB(hashCode(data.author));
 
 
             addNode(data.messageId, data.content, nodeColor, true);
@@ -307,6 +307,8 @@ function drawFromLocalDB() {
 
 }
 
+
+//gives a random color for each user
 function hashCode(str) { // java String#hashCode
     var hash = 0;
     for (var i = 0; i < str.length; i++) {
@@ -320,5 +322,11 @@ function intToRGB(i){
         .toString(16)
         .toUpperCase();
 
-    return "00000".substring(0, 6 - c.length) + c;
+    var result = "00000".substring(0, 6 - c.length) + c;
+    result.replace("F", "D")
+        .replace("E", "C")
+        .replace("0", "2")
+        .replace("1", "3");
+
+    return result
 }
