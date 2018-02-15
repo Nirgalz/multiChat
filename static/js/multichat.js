@@ -21,11 +21,6 @@ function addToConversation(who, msgType, dataString) {
     content = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     content = content.replace(/\n/g, '<br />');
 
-    //TODO use DOM elements directly, avoid using strings to construct this
-    //TODO use scrollback terminal with fixed limit lines
-    document.getElementById('conversation').innerHTML +=
-        "<b>" + who + ":</b>&nbsp;" + content + "<br />";
-
 
     //TODO add colors for more variations and more users
     //color depending on the author
@@ -38,9 +33,8 @@ function addToConversation(who, msgType, dataString) {
     //vis.js
     addNode(data.messageId, content, nodeColor, true);
 
-
     //adds message node connected to author
-    addEdge(data.author + data.messageId, data.messageId, data.author)
+    addEdge(data.author + data.messageId, data.messageId, data.author);
 
     //links to parents message if not null
     if (data.parentMessageId !== null) {
@@ -299,16 +293,32 @@ function drawFromLocalDB() {
         var nodes = response;
         for (var i = 0 ; i < nodes.rows.length ; i ++) {
             var data = nodes.rows[i].doc.data;
-            var nodeColor = "";
-            if (data.author === selfEasyrtcid) {
-                nodeColor = "#FF5733";
-            } else {
-                nodeColor = "#abebc6";
-            }
+            var nodeColor = intToRGB(hashCode(data.author));
+
+
             addNode(data.messageId, data.content, nodeColor, true);
+            //links to parents message if not null
+            if (data.parentMessageId !== null) {
+                addEdge(getDate() + '_' + data.author + '_' + data.parentMessageId, data.messageId, data.parentMessageId)
+            }
+
         }
     });
 
+}
 
+function hashCode(str) { // java String#hashCode
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return hash;
+}
 
+function intToRGB(i){
+    var c = (i & 0x00FFFFFF)
+        .toString(16)
+        .toUpperCase();
+
+    return "00000".substring(0, 6 - c.length) + c;
 }

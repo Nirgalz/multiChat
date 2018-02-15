@@ -16,7 +16,6 @@
     <!-- Assumes global locations for socket.io.js and easyrtc.js -->
     <script src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="/easyrtc/easyrtc.js"></script>
-    <script type="text/javascript" src="/js/cytoscape.js"></script>
     <!--pouchDBCDN TODO make it local-->
     <script src="//cdn.jsdelivr.net/npm/pouchdb@6.4.2/dist/pouchdb.min.js"></script>
 
@@ -24,6 +23,11 @@
 
 </head>
 <body onload="connect()">
+<div id="debug">
+    <button id="emptyLocalDb">empty local DB</button>
+    <button id="loadDataSample">load data sample (todo)</button>
+    <button id="connectRoomTest">connect room test</button>
+</div>
   <button id="toggleConsole">show/hide console</button>
 <div id="receiveMessageArea" class="panel" style="display: none">
     <div id="conversation"></div>
@@ -39,6 +43,8 @@
 
 <script type="text/javascript" src="js/multichat.js"></script>
 <script type="text/javascript" src="/js/script.js"></script>
+<script type="text/javascript" src="/js/rooms.js"></script>
+
 
 
 </html>
