@@ -12,7 +12,6 @@ function addToConversation(who, msgType, dataString) {
 
     var data = JSON.parse(dataString);
     var content = data.content;
-    var nodeColor;
 
     addMessagetoDB(data);
 
@@ -22,13 +21,9 @@ function addToConversation(who, msgType, dataString) {
     content = content.replace(/\n/g, '<br />');
 
 
-    //TODO add colors for more variations and more users
-    //color depending on the author
-    if (data.author === selfEasyrtcid) {
-        nodeColor = "#FF5733";
-    } else {
-        nodeColor = "#abebc6";
-    }
+
+    //color depending on the id string
+    var nodeColor =  "#" +intToRGB(hashCode(data.author));
 
     //adds message
     addNode(data.messageId, content, nodeColor, true);
@@ -57,13 +52,17 @@ function convertListToButtons(roomName, occupants, isPrimary) {
         otherClientDiv.removeChild(otherClientDiv.lastChild);
     }
 
+    //node color
+    var nodeColor =  "#" +intToRGB(hashCode(data.author));
+
     //adds self node
-    addNode(easyrtc.idToName(selfEasyrtcid), "Me", '#C70039', false);
+
+    addNode(easyrtc.idToName(selfEasyrtcid), "Me", nodeColor, false);
 
 
     for (var easyrtcid in occupants) {
 
-        addNode(easyrtc.idToName(easyrtcid), easyrtc.idToName(easyrtcid), '#2ecc71', false);
+        addNode(easyrtc.idToName(easyrtcid), easyrtc.idToName(easyrtcid), nodeColor, false);
 
 
         var button = document.createElement('button');
@@ -169,22 +168,6 @@ $(function () {
 
             }
         }
-        // ,
-        // groups: {
-        //     useDefaultGroups: false,
-        //     users: {
-        //         shape: 'icon',
-        //         icon: {
-        //             face: 'FontAwesome',
-        //             code: '\uf007',
-        //             size: 50
-        //         }
-        //     },
-        //     messages: {
-        //
-        //     }
-        // }
-
     };
     network = new vis.Network(container, data, options);
 
