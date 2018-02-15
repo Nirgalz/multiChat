@@ -266,7 +266,7 @@ function removeEdge(id) {
 
 //pouchDB tests
 //adds message to local db
-function  addMessagetoDB(data) {
+function addMessagetoDB(data) {
 
     var message = {
         _id: data.messageId,
@@ -286,23 +286,29 @@ function  addMessagetoDB(data) {
 }
 
 
-function getLocalHistory() {
-
-    db.find('all').then(function (value) { return value; })
-}
-
 function drawFromLocalDB() {
-    var nodes = getLocalHistory();
-    console.log(nodes);
-    for (var i = 0 ; i < nodes.rows.length ; i ++) {
-        var data = nodes.rows[i].data;
-        var nodeColor = "";
-        if (data.author === selfEasyrtcid) {
-            nodeColor = "#FF5733";
-        } else {
-            nodeColor = "#abebc6";
-        }
-        addNode(data.messageId, data.content, nodeColor, true);
 
-    }
+    //loads docs
+    db.allDocs({
+        include_docs: true,
+        attachments: true
+    }, function(err, response) {
+        if (err) { return console.log(err); }
+
+        //draws history from db
+        var nodes = response;
+        for (var i = 0 ; i < nodes.rows.length ; i ++) {
+            var data = nodes.rows[i].doc.data;
+            var nodeColor = "";
+            if (data.author === selfEasyrtcid) {
+                nodeColor = "#FF5733";
+            } else {
+                nodeColor = "#abebc6";
+            }
+            addNode(data.messageId, data.content, nodeColor, true);
+        }
+    });
+
+
+
 }

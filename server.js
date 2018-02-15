@@ -4,13 +4,9 @@ var express = require("express");           // web framework external module
 var serveStatic = require('serve-static');  // serve static files
 var socketIo = require("socket.io");        // web socket external module
 var easyrtc = require("easyrtc");           // EasyRTC external module
-const uuidV4 = require('uuid/v4');
 var PouchDB = require('pouchdb');
 PouchDB.plugin(require('pouchdb-find'));
 
-
-
-var cytoscape = require('cytoscape');       //cytoscape external module
 
 // Set process name
 process.title = "node-easyrtc";
@@ -25,14 +21,6 @@ var webServer = http.createServer(app).listen(8080);
 // Start Socket.io so it attaches itself to Express server
 var socketServer = socketIo.listen(webServer, {"log level": 1});
 
-//attempt to manage UUIDs through sockets
-socketServer.on('connection', function (socket) {
-    console.log('hello')
-    socketServer.on('reqID', function (data) {
-        console.log(data);
-        socket.emit('UUID', {UUID: uuidV4()});
-    });
-});
 easyrtc.setOption("logLevel", "debug");
 
 // Overriding the default easyrtcAuth listener, only so we can directly access its callback
