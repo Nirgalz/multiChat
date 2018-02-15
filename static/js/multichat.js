@@ -286,17 +286,25 @@ function drawFromLocalDB() {
     db.allDocs({
         include_docs: true,
         attachments: true
-    }, function(err, response) {
+    }, function(err, nodes) {
         if (err) { return console.log(err); }
 
         //draws history from db
-        var nodes = response;
+        var authors = [];
         for (var i = 0 ; i < nodes.rows.length ; i ++) {
             var data = nodes.rows[i].doc.data;
             var nodeColor =  "#" +intToRGB(hashCode(data.author));
 
-
+            //adds message
             addNode(data.messageId, data.content, nodeColor, true);
+
+            // will create a node for the author connected to the first message
+            if (!authors.includes(data.author)) {
+                addNode(data.author, data.author, nodeColor, true);
+                addEdge(data.author + data.messageId, data.messageId, data.author);
+                authors.push(data.author);
+            }
+
             //links to parents message if not null
             if (data.parentMessageId !== null) {
                 addEdge(getDate() + '_' + data.author + '_' + data.parentMessageId, data.messageId, data.parentMessageId)
@@ -328,5 +336,5 @@ function intToRGB(i){
         .replace("0", "2")
         .replace("1", "3");
 
-    return result
+    return result;
 }
