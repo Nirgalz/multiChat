@@ -1,32 +1,27 @@
-EasyRTC Server Example
-======================
+P2P chat with graph viz tests
+=============================
 
-This folder contains all the files you'll need to create a simple server with EasyRTC, Express, and Socket.io. You can copy these files where you wish.
+WIP
 
-Files and Folders:
-------------------
-
- - package.json - Provides project information allowing npm to find and install required modules.
- - server.js - Server code.
- - /static/ - Root folder for web server. Put html files here!
-
+Librairies and dependancies 
+---------------------------
+ - easyRTC
+ - vis.js
+ - pouchDB
  
-Installing Required Modules:
-----------------------------
+ 
+Installation
+------------
 
  - Type `npm install` in console.
- - This will read the package.json file to find and install the required modules including EasyRTC, Express, and Socket.io.
- - Required modules will go into a new 'node_modules' subfolder
-
 
 Running the Server:
 -------------------
 
- - Type `node server` in console.
+ - Type `npm run` in console.
 
-
-Viewing the examples:
+viewing the prototype
 ---------------------
 
- - In your WebRTC enabled browser, visit your server address including the port. By default port 8080 is used.
- - http://localhost:8080/
+ - visit http://localhost:8080/
+ - open a second tab with same link

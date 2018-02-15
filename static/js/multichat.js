@@ -30,10 +30,10 @@ function addToConversation(who, msgType, dataString) {
         nodeColor = "#abebc6";
     }
 
-    //vis.js
+    //adds message
     addNode(data.messageId, content, nodeColor, true);
 
-    //adds message node connected to author
+    //adds message edge connected to author
     addEdge(data.author + data.messageId, data.messageId, data.author);
 
     //links to parents message if not null
@@ -58,12 +58,11 @@ function convertListToButtons(roomName, occupants, isPrimary) {
     }
 
     //adds self node
-    addNode(easyrtc.idToName(selfEasyrtcid), "Me", '#C70039', false)
+    addNode(easyrtc.idToName(selfEasyrtcid), "Me", '#C70039', false);
 
 
     for (var easyrtcid in occupants) {
 
-        //add all other users in users var
         addNode(easyrtc.idToName(easyrtcid), easyrtc.idToName(easyrtcid), '#2ecc71', false);
 
 
@@ -163,7 +162,30 @@ $(function () {
         nodes: nodes,
         edges: edges
     };
-    var options = {};
+    var options = {
+        edges: {
+            arrows: {
+                to:     {enabled: true, scaleFactor:1, type:'arrow'}
+
+            }
+        }
+        // ,
+        // groups: {
+        //     useDefaultGroups: false,
+        //     users: {
+        //         shape: 'icon',
+        //         icon: {
+        //             face: 'FontAwesome',
+        //             code: '\uf007',
+        //             size: 50
+        //         }
+        //     },
+        //     messages: {
+        //
+        //     }
+        // }
+
+    };
     network = new vis.Network(container, data, options);
 
     // adds event listener on nodes to get answered message's id
@@ -183,7 +205,7 @@ $(function () {
 
 //functions
 //adds a node
-function addNode(id, label, style, physics) {
+function addNode(id, label, style, physics, group) {
     try {
         // will not try to make an already existing node :
         if (nodes._data[id] === undefined) {
@@ -191,6 +213,7 @@ function addNode(id, label, style, physics) {
                 id: id,
                 label: label,
                 color: style,
+                group: group,
                 physics: true
             });
         }
@@ -286,13 +309,13 @@ function drawFromLocalDB() {
     db.allDocs({
         include_docs: true,
         attachments: true
-    }, function(err, nodes) {
+    }, function(err, nodesFromDb) {
         if (err) { return console.log(err); }
 
         //draws history from db
         var authors = [];
-        for (var i = 0 ; i < nodes.rows.length ; i ++) {
-            var data = nodes.rows[i].doc.data;
+        for (var i = 0 ; i < nodesFromDb.rows.length ; i ++) {
+            var data = nodesFromDb.rows[i].doc.data;
             var nodeColor =  "#" +intToRGB(hashCode(data.author));
 
             //adds message
@@ -300,14 +323,33 @@ function drawFromLocalDB() {
 
             // will create a node for the author connected to the first message
             if (!authors.includes(data.author)) {
-                addNode(data.author, data.author, nodeColor, true);
-                addEdge(data.author + data.messageId, data.messageId, data.author);
+                if (nodes._data[data.author] === undefined) {
+                    try {
+                        nodes.add({
+                            id: data.author,
+                            label: data.author,
+                            shape: "icon",
+                            icon: {
+                                face: 'FontAwesome',
+                                code: '\uf007',
+                                size: 50,
+                                color: nodeColor
+                            }
+                        });
+                    }
+
+                catch (err) {
+                        alert(err);
+                    }
+                }
+                //addNode(data.author, data.author, nodeColor, true, "users");
+                addEdge(data.author + data.messageId, data.author, data.messageId );
                 authors.push(data.author);
             }
 
             //links to parents message if not null
             if (data.parentMessageId !== null) {
-                addEdge(getDate() + '_' + data.author + '_' + data.parentMessageId, data.messageId, data.parentMessageId)
+                addEdge(getDate() + '_' + data.author + '_' + data.parentMessageId, data.parentMessageId, data.messageId)
             }
 
         }
@@ -335,6 +377,5 @@ function intToRGB(i){
         .replace("E", "C")
         .replace("0", "2")
         .replace("1", "3");
-
     return result;
 }
