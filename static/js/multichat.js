@@ -5,9 +5,7 @@
 //
 var selfEasyrtcid = "";
 
-var socketIo = io();
-
-function addToConversation(who, msgType, dataString) {
+function addToRoom(who, msgType, dataString) {
 
 
     var data = JSON.parse(dataString);
@@ -57,9 +55,10 @@ function addToConversation(who, msgType, dataString) {
 
 
 function connect() {
-    easyrtc.setPeerListener(addToConversation);
+    connectToRoom("room");
+    easyrtc.setPeerListener(addToRoom);
     easyrtc.setRoomOccupantListener(convertListToButtons);
-    easyrtc.connect("easyrtc.instantMessaging", loginSuccess, loginFailure);
+    easyrtc.connect("multichat", loginSuccess, loginFailure);
 }
 
 //TODO refactor this
@@ -152,8 +151,12 @@ function sendStuffWS(otherEasyrtcid) {
         content: text
     };
 
-    easyrtc.sendDataWS(otherEasyrtcid, "message", JSON.stringify(data));
-    addToConversation(otherEasyrtcid, "message", JSON.stringify(data));
+
+    var dest = {
+        targetRoom: "room"
+    };
+    easyrtc.sendDataWS(dest, "message", JSON.stringify(data));
+    addToRoom(otherEasyrtcid, "message", JSON.stringify(data));
     document.getElementById('sendMessageText').value = "";
 }
 
