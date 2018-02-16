@@ -5,26 +5,23 @@
 //
 var selfEasyrtcid = "";
 
-function addToRoom(who, msgType, dataString) {
+function addToRoom(msgType, dataString) {
 
-
+    //parses data
     var data = JSON.parse(dataString);
     var content = data.content;
 
+    //saves message to db
     addMessagetoDB(data);
-
 
     // Escape html special characters, then add linefeeds.
     content = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     content = content.replace(/\n/g, '<br />');
 
-
-
     //color depending on the id string
-    var nodeColor =  "#" +intToRGB(hashCode(data.author));
+    var nodeColor = "#" + intToRGB(hashCode(data.author));
 
-
-
+    //animations when adding a message
     setTimeout(function () {
         //adds message edge connected to author
         var edge1 = addEdge(data.author + data.messageId, data.parentMessageId, data.author);
@@ -33,71 +30,63 @@ function addToRoom(who, msgType, dataString) {
             addNode(data.messageId, content, nodeColor, true);
             //links to parents message if not null
             if (data.parentMessageId !== null) {
-                 addEdge(getDate() + '_' + who + '_' + data.parentMessageId, data.messageId, data.parentMessageId);
-
+                addEdge(getDate() + '_' + data.parentMessageId, data.messageId, data.parentMessageId);
             }
-            var edge2 = addEdge(getDate() + '_' + who + '_' + data.messageId, data.messageId, data.author);
+            var edge2 = addEdge(getDate() + '_' + data.messageId, data.messageId, data.author);
             setTimeout(function () {
-               //remove edge to author
+                //remove edge to author
                 removeEdge(edge1);
                 setTimeout(function () {
                     //remove edge to author
                     removeEdge(edge2);
-
                 }, 200);
             }, 200);
         }, 200);
     }, 200);
-
-
-
 }
 
-
+//At connection, sets up RTC listeners and connects
 function connect() {
     connectToRoom("room");
     easyrtc.setPeerListener(addToRoom);
-    easyrtc.setRoomOccupantListener(convertListToButtons);
+    easyrtc.setRoomOccupantListener(generateRoomOccupants);
     easyrtc.connect("multichat", loginSuccess, loginFailure);
+
+    $("#sendStuff").on("click", function () {
+        sendStuffWS();
+    });
+
 }
 
-//TODO refactor this
-function convertListToButtons(roomName, occupants, isPrimary) {
-
-    var otherClientDiv = document.getElementById('otherClients');
-    while (otherClientDiv.hasChildNodes()) {
-        otherClientDiv.removeChild(otherClientDiv.lastChild);
-    }
+//generates room occupants
+function generateRoomOccupants(roomName, occupants, isPrimary) {
 
     //node color
-    var nodeColor =  "#" +intToRGB(hashCode(easyrtc.idToName(selfEasyrtcid)));
+    var nodeColor = "#" + intToRGB(hashCode(easyrtc.idToName(selfEasyrtcid)));
 
-
-        if (nodes._data[easyrtc.idToName(selfEasyrtcid)] === undefined) {
-            try {
-                nodes.add({
-                    id: easyrtc.idToName(selfEasyrtcid),
-                    label: "Me",
-                    shape: "icon",
-                    icon: {
-                        face: 'FontAwesome',
-                        code: '\uf007',
-                        size: 50,
-                        color: nodeColor
-                    }
-                });
-            }
-
-            catch (err) {
-                alert(err);
-            }
+    //generates client's user nodes
+    if (nodes._data[easyrtc.idToName(selfEasyrtcid)] === undefined) {
+        try {
+            nodes.add({
+                id: easyrtc.idToName(selfEasyrtcid),
+                label: "Me",
+                shape: "icon",
+                icon: {
+                    face: 'FontAwesome',
+                    code: '\uf007',
+                    size: 50,
+                    color: nodeColor
+                }
+            });
         }
+        catch (err) {
+            alert(err);
+        }
+    }
 
-    //addNode(easyrtc.idToName(selfEasyrtcid), "Me", nodeColor, false);
-
-
+    //generates other clients' nodes
     for (var easyrtcid in occupants) {
-        nodeColor =  "#" +intToRGB(hashCode(easyrtc.idToName(easyrtcid)));
+        nodeColor = "#" + intToRGB(hashCode(easyrtc.idToName(easyrtcid)));
         if (nodes._data[easyrtc.idToName(easyrtcid)] === undefined) {
             try {
                 nodes.add({
@@ -112,37 +101,22 @@ function convertListToButtons(roomName, occupants, isPrimary) {
                     }
                 });
             }
-
             catch (err) {
                 alert(err);
             }
         }
-        //addNode(easyrtc.idToName(easyrtcid), easyrtc.idToName(easyrtcid), nodeColor, false);
-
-
-        var button = document.createElement('button');
-        button.onclick = function (easyrtcid) {
-            return function () {
-                sendStuffWS(easyrtcid);
-            };
-        }(easyrtcid);
-        var label = document.createTextNode("Send to " + easyrtc.idToName(easyrtcid));
-        button.appendChild(label);
-
-        otherClientDiv.appendChild(button);
-    }
-    if (!otherClientDiv.hasChildNodes()) {
-        otherClientDiv.innerHTML = "<em>ALONE</em>";
     }
 }
 
-
-function sendStuffWS(otherEasyrtcid) {
+//gets data from listeners and sends to the room
+function sendStuffWS() {
+    //message content listener
     var text = document.getElementById('sendMessageText').value;
     if (text.replace(/\s/g, "").length === 0) { // Don't send just whitespace
         return;
     }
 
+    //data to send
     var data = {
         messageId: generateMessageId(easyrtc.idToName(selfEasyrtcid), text),
         author: selfEasyrtcid,
@@ -151,12 +125,18 @@ function sendStuffWS(otherEasyrtcid) {
         content: text
     };
 
-
+    //will be used for chosing between rooms or sending to another peer
     var dest = {
         targetRoom: "room"
     };
+
+    //sends data to server
     easyrtc.sendDataWS(dest, "message", JSON.stringify(data));
-    addToRoom(otherEasyrtcid, "message", JSON.stringify(data));
+
+    //will generate message node on client
+    addToRoom("message", JSON.stringify(data));
+
+    //empties text field
     document.getElementById('sendMessageText').value = "";
 }
 
@@ -171,18 +151,6 @@ function loginFailure(errorCode, message) {
     easyrtc.showError(errorCode, message);
 }
 
-//
-// Tools
-//
-
-function getDate() {
-    return new Date().getTime();
-}
-
-function generateMessageId(author, message) {
-    //TODO real UUID
-    return getDate() + "_" + author + "_" + message.substr(2, 5) + "_" + Math.random().toString(36).substr(2, 9);
-}
 
 //temporary parent message management
 var parentMessageId = null;
@@ -203,7 +171,7 @@ function getParentMessageId() {
 //
 
 
-//Tests with vis.js
+//vis.js instance and config
 var nodes;
 var edges;
 var network;
@@ -223,7 +191,7 @@ $(function () {
     var options = {
         edges: {
             arrows: {
-                to:     {enabled: true, scaleFactor:1, type:'arrow'}
+                to: {enabled: true, scaleFactor: 1, type: 'arrow'}
 
             }
         }
@@ -325,19 +293,21 @@ function removeEdge(id) {
 }
 
 
-//pouchDB tests
+//pouchDB
 //adds message to local db
 function addMessagetoDB(data) {
 
     var message = {
         _id: data.messageId,
-        data:data
+        data: data
     };
 
     db.put(message, function callback(err, result) {
-        db.info().then(function (info) {
-            console.log(info);
-        });
+
+        //for debugging purposes
+        // db.info().then(function (info) {
+        //     console.log(info);
+        // });
 
         // getLocalHistory();
         if (err) {
@@ -346,21 +316,24 @@ function addMessagetoDB(data) {
     });
 }
 
-
+//draws graph from DB
+//TODO refactoring : get one function for both real time and DB generated graph
 function drawFromLocalDB() {
 
     //loads docs
     db.allDocs({
         include_docs: true,
         attachments: true
-    }, function(err, nodesFromDb) {
-        if (err) { return console.log(err); }
+    }, function (err, nodesFromDb) {
+        if (err) {
+            return console.log(err);
+        }
 
         //draws history from db
         var authors = [];
-        for (var i = 0 ; i < nodesFromDb.rows.length ; i ++) {
+        for (var i = 0; i < nodesFromDb.rows.length; i++) {
             var data = nodesFromDb.rows[i].doc.data;
-            var nodeColor =  "#" +intToRGB(hashCode(data.author));
+            var nodeColor = "#" + intToRGB(hashCode(data.author));
 
             //adds message
             addNode(data.messageId, data.content, nodeColor, true);
@@ -382,7 +355,7 @@ function drawFromLocalDB() {
                         });
                     }
 
-                catch (err) {
+                    catch (err) {
                         alert(err);
                     }
                 }
@@ -395,7 +368,23 @@ function drawFromLocalDB() {
 
         }
     });
+}
 
+
+//
+// Tools
+//
+
+
+//return UNIX date
+function getDate() {
+    return new Date().getTime();
+}
+
+//generates unique UUID
+function generateMessageId(author, message) {
+    //TODO better UUID
+    return getDate() + "_" + author + "_" + message.substr(2, 5) + "_" + Math.random().toString(36).substr(2, 9);
 }
 
 
@@ -408,7 +397,7 @@ function hashCode(str) { // java String#hashCode
     return hash;
 }
 
-function intToRGB(i){
+function intToRGB(i) {
     var c = (i & 0x00FFFFFF)
         .toString(16)
         .toUpperCase();
