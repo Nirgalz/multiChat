@@ -19,3 +19,7 @@ $("#emptyLocalDb").on("click", function () {
 $("#connectRoomTest").on("click", function () {
     connectToRoom("test");
 });
+
+$("#graphDemo").on("click", function () {
+    launchDemo();
+});
