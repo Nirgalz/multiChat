@@ -36,8 +36,9 @@ function addToConversation(who, msgType, dataString) {
             //links to parents message if not null
             if (data.parentMessageId !== null) {
                  addEdge(getDate() + '_' + who + '_' + data.parentMessageId, data.messageId, data.parentMessageId);
-                var edge2 = addEdge(getDate() + '_' + who + '_' + data.messageId, data.messageId, data.author);
+
             }
+            var edge2 = addEdge(getDate() + '_' + who + '_' + data.messageId, data.messageId, data.author);
             setTimeout(function () {
                //remove edge to author
                 removeEdge(edge1);
@@ -382,9 +383,6 @@ function drawFromLocalDB() {
                         alert(err);
                     }
                 }
-                //addNode(data.author, data.author, nodeColor, true, "users");
-                addEdge(data.author + data.messageId, data.author, data.messageId );
-                authors.push(data.author);
             }
 
             //links to parents message if not null
