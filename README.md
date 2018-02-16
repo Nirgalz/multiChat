@@ -24,4 +24,4 @@ viewing the prototype
 ---------------------
 
  - visit http://localhost:8080/
- - open a second tab with same link
+ - click on 'graph demo' to see a simulated environment (press f5 or close before your computer dies)

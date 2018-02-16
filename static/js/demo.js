@@ -3,7 +3,6 @@
 //launches simulated 
 function launchDemo() {
     var botsNumber = 10;
-    var messagesNumber = 200;
     var bots = [];
     var messages = [];
     var botName;
@@ -51,7 +50,7 @@ function randomMessage() {
 }
 
 function randomTime() {
-    return Math.floor((Math.random() * 1000) + 1);
+    return Math.floor((Math.random() * 500) + 1);
 }
 
 function randomBot(bots) {
@@ -109,7 +108,7 @@ function printMessage(bots, messages, j) {
         }, 200);
 
         j++;
-        if (j <200) {
+        if (j <500) {
             printMessage(bots, messages, j);
         }
 
