@@ -25,16 +25,33 @@ function addToConversation(who, msgType, dataString) {
     //color depending on the id string
     var nodeColor =  "#" +intToRGB(hashCode(data.author));
 
-    //adds message
-    addNode(data.messageId, content, nodeColor, true);
 
-    //adds message edge connected to author
-    addEdge(data.author + data.messageId, data.messageId, data.author);
 
-    //links to parents message if not null
-    if (data.parentMessageId !== null) {
-        addEdge(getDate() + '_' + who + '_' + data.parentMessageId, data.messageId, data.parentMessageId)
-    }
+    setTimeout(function () {
+        //adds message edge connected to author
+        var edge1 = addEdge(data.author + data.messageId, data.parentMessageId, data.author);
+        setTimeout(function () {
+            //adds message
+            addNode(data.messageId, content, nodeColor, true);
+            //links to parents message if not null
+            if (data.parentMessageId !== null) {
+                 addEdge(getDate() + '_' + who + '_' + data.parentMessageId, data.messageId, data.parentMessageId);
+                var edge2 = addEdge(getDate() + '_' + who + '_' + data.messageId, data.messageId, data.author);
+            }
+            setTimeout(function () {
+               //remove edge to author
+                removeEdge(edge1);
+                setTimeout(function () {
+                    //remove edge to author
+                    removeEdge(edge2);
+
+                }, 200);
+            }, 200);
+        }, 200);
+    }, 200);
+
+
+
 }
 
 
@@ -273,6 +290,8 @@ function addEdge(id, from, to) {
             from: from,
             to: to
         });
+
+        return id;
     }
     catch (err) {
         alert(err);
