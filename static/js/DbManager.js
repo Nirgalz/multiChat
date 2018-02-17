@@ -31,3 +31,41 @@ function addMessagetoDB(data) {
         }
     });
 }
+
+//updates rooms' list
+function updateRoomList(roomName) {
+    PouchDB.debug.enable('*');
+    var personalDb = new PouchDB("personalDb");
+
+    personalDb.get('rooms').then(function(doc) {
+
+        if (!doc.list.includes(roomName)) {
+            var list = doc.list;
+            list.push(roomName);
+
+            return db.put({
+                _id: 'rooms',
+                _rev: doc._rev,
+                list: list
+            });
+        }
+
+    }).then(function(response) {
+        personalDb.get('rooms').then(function (doc) {
+            console.log(doc);
+        }).catch(function (err) {
+            console.log(err);
+        });
+    }).catch(function (err) {
+        db.put({
+            _id: 'rooms',
+            title: 'Rooms List',
+            list: [roomName]
+        }).then(function (response) {
+            // handle response
+        }).catch(function (err) {
+            console.log(err);
+        });
+        //console.log(err);
+    });
+}

@@ -18,8 +18,10 @@ function connect() {
         easyrtc.connect("multichat", loginSuccess, loginFailure);
         firstConnect = false;
     }
-    //pouchDB integration tests
+    //pouchDB
     connectToDb(room);
+
+    //vis.js
     generateGraph(room);
 
     $("#sendStuff")
@@ -37,7 +39,7 @@ function connectToRoom(roomName) {
 
     easyrtc.joinRoom(roomName, null,
         function() {
-            console.log(roomName);
+            updateRoomList(roomName);
         },
         function(errorCode, errorText, roomName) {
             easyrtc.showError(errorCode, errorText + ": room name was(" + roomName + ")");
