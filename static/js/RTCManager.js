@@ -7,16 +7,20 @@
 var selfEasyrtcid = "";
 
 var room = "default";
-
+var firstConnect = true;
 
 //At connection, sets up RTC listeners and connects
 function connect() {
     connectToRoom(room);
     easyrtc.setPeerListener(addToRoom);
     easyrtc.setRoomOccupantListener(generateRoomOccupants);
-    if (room === "default") {
+    if (room === "default" && firstConnect === true) {
         easyrtc.connect("multichat", loginSuccess, loginFailure);
+        firstConnect = false;
     }
+    //pouchDB integration tests
+    connectToDb(room);
+    generateGraph(room);
 
     $("#sendStuff")
         .on("click", function () {

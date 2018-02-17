@@ -2,6 +2,14 @@
 
 
 //pouchDB
+
+//connect to DB
+var db;
+function connectToDb(DBname) {
+    db = new PouchDB(DBname);
+}
+
+
 //adds message to local db
 function addMessagetoDB(data) {
 
