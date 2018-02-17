@@ -1,10 +1,9 @@
 "use strict"
 
 //toggle console on click
-$("#toggleConsole").on("click", function() {
-    $("#receiveMessageArea").toggle();
+$("#toggleRoomTools").on("click", function() {
+    $("#roomTools").toggle();
 });
-
 
 //empty local db
 $("#emptyLocalDb").on("click", function () {
@@ -15,6 +14,12 @@ $("#emptyLocalDb").on("click", function () {
         console.log(err);
     });
 });
+
+$("#sendChangeRoomText").on("click", function () {
+    changeRoom($("#changeRoomText").val());
+});
+
+
 
 $("#connectRoomTest").on("click", function () {
     connectToRoom("test");

@@ -6,19 +6,48 @@
 //
 var selfEasyrtcid = "";
 
+var room = "default";
+
 
 //At connection, sets up RTC listeners and connects
 function connect() {
-    connectToRoom("room");
+    connectToRoom(room);
     easyrtc.setPeerListener(addToRoom);
     easyrtc.setRoomOccupantListener(generateRoomOccupants);
-    easyrtc.connect("multichat", loginSuccess, loginFailure);
+    if (room === "default") {
+        easyrtc.connect("multichat", loginSuccess, loginFailure);
+    }
 
-    $("#sendStuff").on("click", function () {
+    $("#sendStuff")
+        .on("click", function () {
         sendStuffWS();
-    });
+    })
+        .html("Send to room: " + room);
+
 
 }
+
+
+//joins a room
+function connectToRoom(roomName) {
+
+    easyrtc.joinRoom(roomName, null,
+        function() {
+            console.log(roomName);
+        },
+        function(errorCode, errorText, roomName) {
+            easyrtc.showError(errorCode, errorText + ": room name was(" + roomName + ")");
+        });
+}
+
+//change room
+function changeRoom(roomName) {
+    easyrtc.leaveRoom(room, changeroomSuccess, loginFailure);
+    room = roomName;
+    connect();
+}
+
+
 
 
 //gets data from listeners and sends to the room
@@ -56,7 +85,11 @@ function sendStuffWS() {
 
 function loginSuccess(easyrtcid) {
     selfEasyrtcid = easyrtcid;
-    document.getElementById("conversation").innerHTML = "I am " + easyrtcid;
+    //document.getElementById("conversation").innerHTML = "I am " + easyrtcid;
+}
+
+function changeroomSuccess() {
+    console.log("successfully left room");
 }
 
 

@@ -8,10 +8,10 @@ textarea, button {
     background-color: rgba(0,0,0,0.8);
     color: #65c000;
     font-family: monospace;
-    border: 1px solid #ae0aae;
+    border: 1px solid #3c3f41;
 }
 
-#conversation {
+#roomList {
     background-color: rgba(0,0,0,0.2);
     font-size: 15px;
 }
@@ -32,6 +32,12 @@ textarea, button {
 #sendMessageText {
     width: 100%;
 }
+
+#changeRoomText {
+    width: 10%;
+    display: block;
+}
+
 #sendMessageArea {
     position: fixed;
     width: 100%;
