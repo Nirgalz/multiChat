@@ -108,9 +108,11 @@ function printMessage(bots, messages, j) {
         }, 200);
 
         j++;
-        if (j <500) {
+        if (j <1000) {
             printMessage(bots, messages, j);
         }
 
-    }, randomTime())
+    },
+        randomTime()
+    )
 }
