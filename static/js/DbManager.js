@@ -90,3 +90,20 @@ function updateRoomListIndex() {
     });
 
 }
+
+//gets room's history from db
+function getRoomHistory(roomName) {
+    var roomDb = new PouchDB(roomName);
+
+    roomDb.allDocs({
+        include_docs: true,
+        attachments: true
+    }, function (err, docs) {
+        if (err) {
+            return console.log(err);
+        }
+
+        return docs;
+
+    });
+}
