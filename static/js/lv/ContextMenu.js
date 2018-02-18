@@ -25,8 +25,9 @@ const ContextMenu = {
      *      coords: DOM pointer of type {x:0, y:0}
      * }
      */
-    displayMenu: function (type, coords) {
+    displayMenu: function (type, coords, data) {
         this.currentMenu = this.menuTypes[type];
+        this.currentMenu.init(data);
         this.spawnHtml(coords);
         this.toggleMenu(true);
     },
@@ -45,7 +46,7 @@ const ContextMenu = {
 
     /**
      * @private
-     * @param type
+     * @param coords
      */
     spawnHtml: function (coords) {
         const $el = this.$el;
@@ -81,9 +82,9 @@ const ContextMenu = {
 ContextMenu.menuTypes = {
     "ADD_REACTION": {
         html: null,
+        targetNodeId: null,
         getHtml: function() {
-            if (!this.html) this.init();
-            return this.html;
+            return this.html;// unneeded?
         },
         /**
          *
@@ -99,11 +100,18 @@ ContextMenu.menuTypes = {
             return false;
         },
         mainAction: function (unicode) {
-            // add node
-            alert("will add " + unicode);
+            const authorId = easyrtc.idToName(selfEasyrtcid);
+            const id = getDate() + "_" + easyrtc.idToName(selfEasyrtcid) + "iconNode";
+            addIconNode(id, "", unicode, stringToColor(authorId));
+            addEdge(getDate() + '_' + this.targetNodeId, id, this.targetNodeId);
+            // TODO IMPORTANT not yet sent over webRTC!
         },
 
-        init: function() {
+        init: function(data) {
+
+            this.targetNodeId = data.targetNodeId;
+            if(!this.targetNodeId) alert("ContextMenu error targetNodeId not defined, don't know what was clicked on");
+
             this.html =
                 "<h3>Add a reaction</h3>" +
                 "<hr/>" +
@@ -112,18 +120,18 @@ ContextMenu.menuTypes = {
                 "</div>";
         },
         icons: {
-            "smile-o": "\uf118",
-            "handshake-o": "\uf2b5",
-            "bath": "\uf2cd",
-            "snowflake-o": "\uf2dc",
-            "blind": "\uf29d",
-            "copyright": "\uf1f9",
-            "check": "\uf00c",
-            "times": "\uf00d",
-            "ban": "\uf05e",
-            "cogs": "\uf085",
-            "cube": "\uf1b2",
-            "eye": "\uf06e"
+            "smile-o":      "\uf118",
+            "meh-o":         "\uf11a",
+            "frown-o":  "\uf119",
+            "handshake-o":  "\uf2b5",
+            "bath":         "\uf2cd",
+            "blind":        "\uf29d",
+            "copyright":    "\uf1f9",
+            "check":        "\uf00c",
+            "times":        "\uf00d",
+            "ban":          "\uf05e",
+            "cube":         "\uf1b2",
+            "eye":          "\uf06e"
         },
         loadIcons: function() {
             var name;

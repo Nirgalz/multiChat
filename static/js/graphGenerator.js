@@ -47,7 +47,9 @@ function generateGraph() {
                 nodes: [targetNode]
             });
 
-            ContextMenu.displayMenu("ADD_REACTION", domCursor);
+            ContextMenu.displayMenu("ADD_REACTION", domCursor, {
+                targetNodeId: targetNodeId
+            });
         }
     });
 
@@ -81,10 +83,9 @@ function generateRoomOccupants(roomName, occupants, isPrimary) {
  * Adds an 'icon' node formatted to represent an existing user.
  * @param id
  * @param label
- * @param nodeColor
  */
 function addUserNode(id, label) {
-    addIconNode(id, label, '\uf007', stringToColor(id));
+    addIconNode(id, label, '\uf007');
 }
 
 /**
@@ -92,10 +93,13 @@ function addUserNode(id, label) {
  * @param id
  * @param label
  * @param unicode
- * @param color
+ * @param color - optional, if unspecified generated from id
  */
 function addIconNode(id, label, unicode, color) {
-    if(nodes._data[id] === undefined) {// if does not already exist
+    if(nodes._data[id] === undefined) {// if node id does not already exist
+
+        color = color ? color : stringToColor(id);// if unspecified
+
         try {
             nodes.add({
                 id: id,
