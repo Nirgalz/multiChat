@@ -10,8 +10,7 @@
 var nodes;
 var edges;
 var network;
-var db;
-$(function () {
+function generateGraph() {
     nodes = new vis.DataSet([]);
 
     // create an array with edges
@@ -42,13 +41,8 @@ $(function () {
         }
     });
 
-    //pouchDB integration tests
-    db = new PouchDB('local_history');
     drawFromLocalDB();
-
-});
-
-
+}
 
 //generates room occupants
 function generateRoomOccupants(roomName, occupants, isPrimary) {
