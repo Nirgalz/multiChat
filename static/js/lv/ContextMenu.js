@@ -5,6 +5,7 @@ const ContextMenu = {
 
     $el: null,
 
+    currentMenu: null,
     visible: false,
 
     /**
@@ -20,13 +21,13 @@ const ContextMenu = {
     /**
      * Displays a customized context menu on the screen.
      * @param data - {
-     *      type: "NEW_NODE",
-     *      pos: DOM pointer of type {x:0, y:0}
+     *      type: "ADD_REACTION",
+     *      coords: DOM pointer of type {x:0, y:0}
      * }
      */
-    displayMenu: function (data) {
-        this.spawnHtml(data.type);
-        this.reposition(data.pos);
+    displayMenu: function (type, coords) {
+        this.currentMenu = this.menuTypes[type];
+        this.spawnHtml(coords);
         this.toggleMenu(true);
     },
 
@@ -44,27 +45,32 @@ const ContextMenu = {
 
     /**
      * @private
-     * @param coords
+     * @param type
      */
-    reposition: function (coords) {
+    spawnHtml: function (coords) {
         const $el = this.$el;
+
+        $el.innerHTML = this.currentMenu.getHtml();
         $el.style.left = coords.x + "px";
         $el.style.top = coords.y + "px";
     },
-    /**
-     * @private
-     * @param type
-     */
-    spawnHtml: function (type) {
-        this.$el.innerHTML = this.types[type].getHtml();
+
+    clickedOnSelf: function (event) {
+        return this.$el.contains(event.target);
     },
     
     registerListeners: function () {
         // close context menu on mouseclick
         addEventListener("mousedown", function(e) {
-            const clickedOnSelf = this.$el.contains(e.target);
-            if(!clickedOnSelf) this.toggleMenu(false);
+            if(!this.clickedOnSelf(e)) this.toggleMenu(false);// clicked outside
         }.bind(this));
+        addEventListener("mouseup", function(e) {
+            if(this.clickedOnSelf(e)) {
+                const closeMenu = this.currentMenu.mousedown(e);
+                if(closeMenu) this.toggleMenu(false);
+            }
+        }.bind(this));
+
         // close context menu on keydown ESC
         addEventListener("keydown", function(e) {
             if(e.keyCode === 27) this.toggleMenu(false);
@@ -72,31 +78,52 @@ const ContextMenu = {
     }
 };
 
-ContextMenu.types = {
-    "NEW_NODE": {
+ContextMenu.menuTypes = {
+    "ADD_REACTION": {
         html: null,
-
-            icons: {
-            "smile-o": "\uf118",
-                "handshake-o": "\uf2b5",
-                "bath": "\uf2cd",
-                "snowflake-o": "\uf2dc",
-                "ban": "\uf05e",
-                "blind": "\uf29d",
-                "copyright": "\uf1f9",
-                "cogs": "\uf085",
-                "times": "\uf00d",
-                "check": "\uf00c",
-                "cube": "\uf1b2",
-                "eye": "\uf06e"
+        getHtml: function() {
+            if (!this.html) this.init();
+            return this.html;
         },
+        /**
+         *
+         * @param event
+         * @returns {boolean}action complete - the context menu should be closed if true.
+         */
+        mousedown: function (event) {
+            if(event.target.attributes["data-unicode"]) {
+                const unicode = event.target.attributes["data-unicode"].value;
+                this.mainAction(unicode);
+                return true;
+            }
+            return false;
+        },
+        mainAction: function (unicode) {
+            // add node
+            alert("will add " + unicode);
+        },
+
         init: function() {
             this.html =
                 "<h3>Add a reaction</h3>" +
                 "<hr/>" +
-                "<div id='ctx-newNode'>" +
-                this.loadIcons() +
+                "<div id='ctx-addReaction'>" +
+                    this.loadIcons() +
                 "</div>";
+        },
+        icons: {
+            "smile-o": "\uf118",
+            "handshake-o": "\uf2b5",
+            "bath": "\uf2cd",
+            "snowflake-o": "\uf2dc",
+            "blind": "\uf29d",
+            "copyright": "\uf1f9",
+            "check": "\uf00c",
+            "times": "\uf00d",
+            "ban": "\uf05e",
+            "cogs": "\uf085",
+            "cube": "\uf1b2",
+            "eye": "\uf06e"
         },
         loadIcons: function() {
             var name;
@@ -107,18 +134,13 @@ ContextMenu.types = {
 
                 output +=
                     "<span class='item'>" +
-                    "<span class='fa fa-"+name+" fa-fw' data-unicode='"+unicode+"'></span>" +
+                        "<span class='fa fa-"+name+" fa-fw' data-unicode='"+unicode+"'></span>" +
                     "</span>";
             }
             return output;
-        },
-        getHtml: function() {
-            if (!this.html) this.init();
-            return this.html;
         }
-
     }
 };
 
 ContextMenu.init(document.getElementById("contextMenu"));
-ContextMenu.displayMenu({type:"NEW_NODE"});// debug
+ContextMenu.displayMenu("ADD_REACTION");// debug

@@ -48,10 +48,7 @@ $(function () {
                 nodes: [targetNode]
             });
 
-            ContextMenu.displayMenu({
-                type: "NEW_NODE",
-                pos: domCursor
-            });
+            ContextMenu.displayMenu("ADD_REACTION", domCursor);
         }
     });
 

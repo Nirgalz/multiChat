@@ -85,12 +85,12 @@ textarea, button {
 #contextMenu .item:hover {background-color: rgba(0, 0, 0, 0.2);}
 #contextMenu .item:active {background-color: rgba(0, 0, 0, 1); color: #FFF;}
 
-#ctx-newNode {
+#ctx-addReaction {
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
 }
-#ctx-newNode .item {
+#ctx-addReaction .item {
     width: 2.1em;
     height: 2.1em;
 }
