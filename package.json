@@ -1,24 +1,22 @@
 {
-  "name": "easyrtc_server_example",
-  "version": "0.1.6",
-  "author": "Priologic Software Inc. <info@priologic.com> (http://priologic.com/)",
-  "description": "Simple EasyRTC server example which includes EasyRTC, Express, and Socket.io",
+  "name": "p2chat",
+  "version": "0.1",
+  "author": "some guys",
+  "description": "weird recipe for a weird result",
   "private": true,
   "scripts": {
-    "start": "node server.js"
+    "run": "node server.js"
   },
   "dependencies": {
-    "cytoscape": "latest",
     "easyrtc": "^1.1.0",
     "express": "latest",
     "pouchdb": "^6.4.3",
     "pouchdb-find": "^6.4.3",
     "serve-static": "latest",
     "socket.io": "latest",
-    "uuid": "^3.2.1",
     "vis": "^4.21.0"
   },
-  "license": "BSD2",
+  "license": "FFA",
   "engines": {
     "node": ">=0.8"
   }
