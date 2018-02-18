@@ -19,8 +19,9 @@ function connect() {
         firstConnect = false;
     }
     //pouchDB
-    connectToDb(room);
 
+    updateRoomListIndex();
+    connectToDb(room);
     //vis.js
     generateGraph(room);
 

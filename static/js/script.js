@@ -17,13 +17,9 @@ $("#emptyLocalDb").on("click", function () {
 
 $("#sendChangeRoomText").on("click", function () {
     changeRoom($("#changeRoomText").val());
+    $("#changeRoomText").val("");
 });
 
-
-
-$("#connectRoomTest").on("click", function () {
-    connectToRoom("test");
-});
 
 $("#graphDemo").on("click", function () {
     launchDemo();

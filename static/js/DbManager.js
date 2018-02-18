@@ -34,17 +34,19 @@ function addMessagetoDB(data) {
 
 //updates rooms' list
 function updateRoomList(roomName) {
-    PouchDB.debug.enable('*');
+    //PouchDB.debug.enable('*');
     var personalDb = new PouchDB("personalDb");
 
     personalDb.get('rooms').then(function(doc) {
-
+        console.log(doc);
         if (!doc.list.includes(roomName)) {
             var list = doc.list;
             list.push(roomName);
 
-            return db.put({
+            updateRoomListIndex();
+            return personalDb.put({
                 _id: 'rooms',
+                title: 'Rooms List',
                 _rev: doc._rev,
                 list: list
             });
@@ -57,7 +59,7 @@ function updateRoomList(roomName) {
             console.log(err);
         });
     }).catch(function (err) {
-        db.put({
+        personalDb.put({
             _id: 'rooms',
             title: 'Rooms List',
             list: [roomName]
@@ -68,4 +70,23 @@ function updateRoomList(roomName) {
         });
         //console.log(err);
     });
+}
+
+//updates room list links
+//TODO: make it using nodes
+function updateRoomListIndex() {
+    var personalDb = new PouchDB("personalDb");
+    personalDb.get('rooms').then(function (doc) {
+
+        $("#roomList").empty();
+        for (var i = 0 ; i < doc.list.length ; i++) {
+            var string = '"' + doc.list[i] + '"';
+            $("#roomList")
+                .append("<li><button class='roomListButtons' onclick='changeRoom(" +string + ")'>" + doc.list[i]+ " ></button></li>")
+        }
+
+    }).catch(function (err) {
+        console.log(err);
+    });
+
 }
