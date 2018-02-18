@@ -1,9 +1,8 @@
 {
   "name": "p2chatgrmbl",
-  "version": "1.0",
+  "version": "0.0.1",
   "author": "some guys",
   "description": "weird recipe for a weird taste",
-  "private": true,
   "scripts": {
     "run": "node server.js"
   },
