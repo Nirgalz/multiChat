@@ -10,7 +10,7 @@ function launchDemo() {
 
     for (var i = 0; i < botsNumber; i++) {
         botName = randomName();
-        nodeColor = "#" + intToRGB(hashCode(botName));
+        nodeColor = "#" + stringToColor(botName);
         if (nodes._data[botName] === undefined) {
             try {
                 nodes.add({
@@ -81,7 +81,7 @@ function printMessage(bots, messages, j) {
         };
 
         //color depending on the id string
-        nodeColor = "#" + intToRGB(hashCode(data.author));
+        nodeColor = "#" + stringToColor(data.author);
 
         //animations when adding a message
         setTimeout(function () {
