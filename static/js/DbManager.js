@@ -34,7 +34,6 @@ function addMessagetoDB(data) {
 
 //updates rooms' list
 function updateRoomList(roomName) {
-    //PouchDB.debug.enable('*');
     var personalDb = new PouchDB("personalDb");
 
     personalDb.get('rooms').then(function(doc) {
@@ -89,4 +88,20 @@ function updateRoomListIndex() {
         console.log(err);
     });
 
+}
+
+//gets room's history from db
+function getRoomHistory(roomName) {
+    var roomDb = new PouchDB(roomName);
+
+    roomDb.allDocs({
+        include_docs: true,
+        attachments: true
+    }, function (err, docs) {
+        if (err) {
+            return console.log(err);
+        }
+        return docs;
+
+    });
 }
