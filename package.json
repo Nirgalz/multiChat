@@ -9,11 +9,7 @@
   "dependencies": {
     "easyrtc": "^1.1.0",
     "express": "latest",
-    "pouchdb": "^6.4.3",
-    "pouchdb-find": "^6.4.3",
-    "serve-static": "latest",
-    "socket.io": "latest",
-    "vis": "^4.21.0"
+    "socket.io": "latest"
   },
   "license": "FFA",
   "engines": {
