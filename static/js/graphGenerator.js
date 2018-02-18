@@ -34,13 +34,34 @@ $(function () {
     network = new vis.Network(container, data, options);
 
     // adds event listener on nodes to get answered message's id
-    network.on('click', function (properties) {
+    network.on('click', retrieveClickedNode);
+
+    // right-click listener to add custom icon node
+    network.on('oncontext', function(properties) {
+        const domCursor = properties.pointer.DOM;
+        const targetNodeId = network.getNodeAt(domCursor);
+        if(targetNodeId) {// if a node was clicked on
+            properties.event.preventDefault();
+            const targetNode = network.findNode(targetNodeId);
+
+            network.setSelection({// select clicked node
+                nodes: [targetNode]
+            });
+
+            ContextMenu.displayMenu({
+                type: "NEW_NODE",
+                pos: domCursor
+            });
+        }
+    });
+
+    function retrieveClickedNode(properties) {
         var ids = properties.nodes;
         var clickedNodes = nodes.get(ids);
         if (clickedNodes[0] !== undefined) {
             parentMessageId = clickedNodes[0].id;
         }
-    });
+    }
 
     //pouchDB integration tests
     db = new PouchDB('local_history');

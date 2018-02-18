@@ -42,3 +42,55 @@ textarea, button {
     right: 0;
     bottom: 0;
 }
+
+/* ===== ContextMenu ===== */
+#contextMenu * {
+    box-sizing: border-box;
+    margin: 0px;
+    padding: 0px;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+#contextMenu {
+    position: absolute;
+    max-width: 8em;
+    min-width: 5em;
+    min-height: 1em;
+    z-index: 2;
+
+    /*border: 2px solid #AAA;*/
+    box-shadow: 3px 3px 10px rgba(255, 255, 255, 0.3);
+
+    font-size: 0.8em;
+    color: #000;
+    background-color: #EEE;
+}
+#contextMenu h3 {
+    font-family: Arial;
+    font-size: 0.8em;
+    margin: 0;
+    text-align: center;
+}
+#contextMenu .item {
+    display: inline-flex;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#contextMenu .item > * {
+    margin: auto;
+}
+#contextMenu .item:hover {background-color: rgba(0, 0, 0, 0.2);}
+#contextMenu .item:active {background-color: rgba(0, 0, 0, 1); color: #FFF;}
+
+#ctx-newNode {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+#ctx-newNode .item {
+    width: 2.1em;
+    height: 2.1em;
+}
