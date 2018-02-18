@@ -8,7 +8,8 @@
   },
   "dependencies": {
     "easyrtc": "^1.1.0",
-    "express": "latest",
+    "express": "latest"
+    "serve-static": "latest",
     "socket.io": "latest"
   },
   "license": "FFA",
