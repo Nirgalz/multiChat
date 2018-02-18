@@ -21,14 +21,14 @@ function getDate() {
 }
 
 //generates unique UUID
-function generateMessageId(author, message) {
+function generateMessageId(author) {
     // date + author is enough to generate unique ID
     return getDate() + "_" + author;
 }
 
 //gives a random color for each user
 function stringToColor(str) {
-    return intToRGB(hashCode(str));
+    return "#" + intToRGB(hashCode(str));
 }
 function hashCode(str) { // java String#hashCode
     var hash = 0;

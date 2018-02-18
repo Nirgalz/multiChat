@@ -143,4 +143,3 @@ ContextMenu.menuTypes = {
 };
 
 ContextMenu.init(document.getElementById("contextMenu"));
-ContextMenu.displayMenu("ADD_REACTION");// debug
