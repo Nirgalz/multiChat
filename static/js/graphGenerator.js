@@ -54,7 +54,7 @@ $(function () {
 function generateRoomOccupants(roomName, occupants, isPrimary) {
 
     //node color
-    var nodeColor = "#" + intToRGB(hashCode(easyrtc.idToName(selfEasyrtcid)));
+    var nodeColor = "#" + stringToColor(easyrtc.idToName(selfEasyrtcid));
 
     //generates client's user nodes
     if (nodes._data[easyrtc.idToName(selfEasyrtcid)] === undefined) {
@@ -78,7 +78,7 @@ function generateRoomOccupants(roomName, occupants, isPrimary) {
 
     //generates other clients' nodes
     for (var easyrtcid in occupants) {
-        nodeColor = "#" + intToRGB(hashCode(easyrtc.idToName(easyrtcid)));
+        nodeColor = "#" + stringToColor(easyrtc.idToName(easyrtcid));
         if (nodes._data[easyrtc.idToName(easyrtcid)] === undefined) {
             try {
                 nodes.add({
@@ -117,7 +117,7 @@ function addToRoom(msgType, dataString) {
     content = content.replace(/\n/g, '<br />');
 
     //color depending on the id string
-    var nodeColor = "#" + intToRGB(hashCode(data.author));
+    var nodeColor = "#" + stringToColor(data.author);
 
     //animations when adding a message
     setTimeout(function () {
@@ -239,7 +239,7 @@ function drawFromLocalDB() {
         var authors = [];
         for (var i = 0; i < nodesFromDb.rows.length; i++) {
             var data = nodesFromDb.rows[i].doc.data;
-            var nodeColor = "#" + intToRGB(hashCode(data.author));
+            var nodeColor = "#" + stringToColor(data.author);
 
             //adds message
             addNode(data.messageId, data.content, nodeColor, true);
