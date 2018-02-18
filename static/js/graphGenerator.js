@@ -33,63 +33,87 @@ function generateGraph() {
     network = new vis.Network(container, data, options);
 
     // adds event listener on nodes to get answered message's id
-    network.on('click', function (properties) {
+    network.on('click', retrieveClickedNode);
+
+    // right-click listener to add custom icon node
+    network.on('oncontext', function(properties) {
+        const domCursor = properties.pointer.DOM;
+        const targetNodeId = network.getNodeAt(domCursor);
+        if(targetNodeId) {// if a node was clicked on
+            properties.event.preventDefault();
+            const targetNode = network.findNode(targetNodeId);
+
+            network.setSelection({// select clicked node
+                nodes: [targetNode]
+            });
+
+            ContextMenu.displayMenu("ADD_REACTION", domCursor, {
+                targetNodeId: targetNodeId
+            });
+        }
+    });
+
+    function retrieveClickedNode(properties) {
         var ids = properties.nodes;
         var clickedNodes = nodes.get(ids);
         if (clickedNodes[0] !== undefined) {
             parentMessageId = clickedNodes[0].id;
         }
-    });
+    }
 
     drawFromLocalDB();
 }
 
+
+
 //generates room occupants
 function generateRoomOccupants(roomName, occupants, isPrimary) {
-
-    //node color
-    var nodeColor = "#" + stringToColor(easyrtc.idToName(selfEasyrtcid));
-
     //generates client's user nodes
-    if (nodes._data[easyrtc.idToName(selfEasyrtcid)] === undefined) {
+    addUserNode(easyrtc.idToName(selfEasyrtcid), "Me");
+
+    //generates other clients' nodes
+    var id;
+    var easyrtcid;
+    for (easyrtcid in occupants) {
+        id = easyrtc.idToName(easyrtcid);
+        addUserNode(id, id);
+    }
+}
+/**
+ * Adds an 'icon' node formatted to represent an existing user.
+ * @param id
+ * @param label
+ */
+function addUserNode(id, label) {
+    addIconNode(id, label, '\uf007');
+}
+
+/**
+ * Adds an 'icon' node.
+ * @param id
+ * @param label
+ * @param unicode
+ * @param color - optional, if unspecified generated from id
+ */
+function addIconNode(id, label, unicode, color) {
+    if(nodes._data[id] === undefined) {// if node id does not already exist
+
+        color = color ? color : stringToColor(id);// if unspecified
+
         try {
             nodes.add({
-                id: easyrtc.idToName(selfEasyrtcid),
-                label: "Me",
+                id: id,
+                label: label,
                 shape: "icon",
                 icon: {
                     face: 'FontAwesome',
-                    code: '\uf007',
+                    code: unicode,
                     size: 50,
-                    color: nodeColor
+                    color: color
                 }
             });
-        }
-        catch (err) {
+        } catch (err) {
             alert(err);
-        }
-    }
-
-    //generates other clients' nodes
-    for (var easyrtcid in occupants) {
-        nodeColor = "#" + stringToColor(easyrtc.idToName(easyrtcid));
-        if (nodes._data[easyrtc.idToName(easyrtcid)] === undefined) {
-            try {
-                nodes.add({
-                    id: easyrtc.idToName(easyrtcid),
-                    label: easyrtc.idToName(easyrtcid),
-                    shape: "icon",
-                    icon: {
-                        face: 'FontAwesome',
-                        code: '\uf007',
-                        size: 50,
-                        color: nodeColor
-                    }
-                });
-            }
-            catch (err) {
-                alert(err);
-            }
         }
     }
 }
@@ -111,7 +135,7 @@ function addToRoom(msgType, dataString) {
     content = content.replace(/\n/g, '<br />');
 
     //color depending on the id string
-    var nodeColor = "#" + stringToColor(data.author);
+    var nodeColor = stringToColor(data.author);
 
     //animations when adding a message
     setTimeout(function () {
@@ -233,7 +257,7 @@ function drawFromLocalDB() {
         var authors = [];
         for (var i = 0; i < nodesFromDb.rows.length; i++) {
             var data = nodesFromDb.rows[i].doc.data;
-            var nodeColor = "#" + stringToColor(data.author);
+            var nodeColor = stringToColor(data.author);
 
             //adds message
             addNode(data.messageId, data.content, nodeColor, true);
