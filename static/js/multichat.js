@@ -4,13 +4,10 @@
 var parentMessageId = null;
 
 function getParentMessageId() {
-    if (parentMessageId !== null) {
-        var result = parentMessageId;
-        parentMessageId = null;
-        return result;
-    } else {
-        return null;
-    }
+    // retrieve value and set to null. If already null, returns null
+    var result = parentMessageId;
+    parentMessageId = null;
+    return result;
 }
 
 //
@@ -25,12 +22,14 @@ function getDate() {
 
 //generates unique UUID
 function generateMessageId(author, message) {
-    //TODO better UUID
-    return getDate() + "_" + author + "_" + message.substr(2, 5) + "_" + Math.random().toString(36).substr(2, 9);
+    // date + author is enough to generate unique ID
+    return getDate() + "_" + author;
 }
 
-
 //gives a random color for each user
+function stringToColor(str) {
+    return intToRGB(hashCode(str));
+}
 function hashCode(str) { // java String#hashCode
     var hash = 0;
     for (var i = 0; i < str.length; i++) {
@@ -38,7 +37,6 @@ function hashCode(str) { // java String#hashCode
     }
     return hash;
 }
-
 function intToRGB(i) {
     var c = (i & 0x00FFFFFF)
         .toString(16)
