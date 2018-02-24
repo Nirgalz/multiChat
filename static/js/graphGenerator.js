@@ -68,6 +68,7 @@ function generateGraph() {
 
 //generates room occupants
 function generateRoomOccupants(roomName, occupants, isPrimary) {
+
     //generates client's user nodes
     addUserNode(getUserId(), "Me");
 

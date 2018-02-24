@@ -11,13 +11,29 @@ var firstConnect = true;
 
 //At connection, sets up RTC listeners and connects
 function connect() {
+
+
+    var username = document.getElementById("userNameField").value;
+    var password = document.getElementById("passwordField").value;
+    if (username) {
+        easyrtc.setUsername(username);
+    }
+    if (password) {
+        easyrtc.setCredential({password: password});
+    }
+
+
     connectToRoom(room);
     easyrtc.setPeerListener(dispatchIncomingData);
     easyrtc.setRoomOccupantListener(generateRoomOccupants);
+
+
     if (room === "default" && firstConnect === true) {
         easyrtc.connect("multichat", loginSuccess, loginFailure);
         firstConnect = false;
     }
+    console.log(easyrtc.username);
+
     //pouchDB
     updateRoomListIndex();
     connectToDb(room);

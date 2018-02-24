@@ -4,7 +4,7 @@ body {
     color: orange;
     font-size: 200%;
 }
-textarea, button {
+textarea, button, input {
     background-color: rgba(0,0,0,0.8);
     color: #65c000;
     font-family: monospace;
