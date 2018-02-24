@@ -11,13 +11,29 @@ var firstConnect = true;
 
 //At connection, sets up RTC listeners and connects
 function connect() {
+
+
+    var username = document.getElementById("userNameField").value;
+    var password = document.getElementById("passwordField").value;
+    if (username) {
+        easyrtc.setUsername(username);
+    }
+    if (password) {
+        easyrtc.setCredential({password: password});
+    }
+
+
     connectToRoom(room);
     easyrtc.setPeerListener(dispatchIncomingData);
     easyrtc.setRoomOccupantListener(generateRoomOccupants);
+
+
     if (room === "default" && firstConnect === true) {
         easyrtc.connect("multichat", loginSuccess, loginFailure);
         firstConnect = false;
     }
+    console.log(easyrtc.username);
+
     //pouchDB
     updateRoomListIndex();
     connectToDb(room);
@@ -38,6 +54,9 @@ function dispatchIncomingData(id, msgType, dataString) {
 
     var data = JSON.parse(dataString);
     if (data.type === "message" || data.type === "icon") {
+        //saves message to db
+        addMessagetoDB(data);
+        //updates graph
         addToRoom(msgType, dataString);
     } else if (data.type === "syncDb") {
         console.log(data);
@@ -93,8 +112,12 @@ function sendMessage() {
     //will generate message node on client
     addToRoom("message", JSON.stringify(data));
 
+    //saves message to db
+    addMessagetoDB(data);
+
     //empties text field
     document.getElementById('sendMessageText').value = "";
+
 }
 
 //different treatment for vairous outcoming data
@@ -121,7 +144,7 @@ function loginSuccess(easyrtcid) {
 }
 
 function changeroomSuccess() {
-    console.log("successfully left room");
+    //console.log("successfully left room");
 }
 
 

@@ -68,6 +68,7 @@ function generateGraph() {
 
 //generates room occupants
 function generateRoomOccupants(roomName, occupants, isPrimary) {
+
     //generates client's user nodes
     addUserNode(getUserId(), "Me");
 
@@ -144,9 +145,6 @@ function addToRoom(msgType, dataString) {
     //parses data
     var data = JSON.parse(dataString);
     var content = data.content;
-
-    //saves message to db
-    addMessagetoDB(data);
 
     // Escape html special characters, then add linefeeds.
     if (content !== undefined) {
