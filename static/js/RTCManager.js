@@ -37,7 +37,7 @@ function connect() {
 function dispatchIncomingData(id, msgType, dataString) {
 
     var data = JSON.parse(dataString);
-    if (data.type === "message") {
+    if (data.type === "message" || data.type === "icon") {
         addToRoom(msgType, dataString);
     } else if (data.type === "syncDb") {
         console.log(data);
@@ -80,7 +80,7 @@ function sendMessage() {
     //data to send
     var data = {
         type: "message",
-        messageId: generateMessageId(getUserId(), text),
+        id: generateMessageId(getUserId(), text),
         author: selfEasyrtcid,
         date: getDate(),
         parentMessageId: getParentMessageId(),

@@ -73,7 +73,7 @@ function printMessage(bots, messages, j) {
         bot = randomBot(bots);
         message = randomName();
         data = {
-            messageId: message,
+            id: message,
             author: bot,
             date: getDate(),
             parentMessageId: randomParentMessage(messages),
@@ -86,15 +86,15 @@ function printMessage(bots, messages, j) {
         //animations when adding a message
         setTimeout(function () {
             //adds message edge connected to author
-            var edge1 = addEdge(data.author + data.messageId, data.parentMessageId, data.author);
+            var edge1 = addEdge(data.author + data.id, data.parentMessageId, data.author);
             setTimeout(function () {
                 //adds message
-                addNode(data.messageId, data.content, nodeColor, true);
+                addNode(data.id, data.content, nodeColor, true);
                 //links to parents message if not null
                 if (data.parentMessageId !== null) {
-                    addEdge(getDate() + '_' + data.parentMessageId, data.messageId, data.parentMessageId);
+                    addEdge(getDate() + '_' + data.parentMessageId, data.id, data.parentMessageId);
                 }
-                var edge2 = addEdge(getDate() + '_' + data.messageId, data.messageId, data.author);
+                var edge2 = addEdge(getDate() + '_' + data.id, data.id, data.author);
                 setTimeout(function () {
                     //remove edge to author
                     removeEdge(edge1);

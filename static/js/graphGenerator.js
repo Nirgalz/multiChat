@@ -48,7 +48,7 @@ function generateGraph() {
             });
 
             ContextMenu.displayMenu("ADD_REACTION", domCursor, {
-                targetNodeId: targetNodeId
+                parentMessageId: targetNodeId
             });
         }
     });
@@ -114,7 +114,7 @@ function addUserNode(id, label) {
  * @param data
  */
 function addIconNode(data) {
-    var color = stringToColor(data.authorId);
+    var color = stringToColor(data.author);
 
     if(nodes._data[data.id] === undefined) {// if node id does not already exist
 
@@ -129,7 +129,6 @@ function addIconNode(data) {
                     color: color
                 }
             });
-            addEdge(getDate() + '_' + data.targetNodeId, data.id, data.targetNodeId);
         } catch (err) {
             alert(err);
         }
@@ -150,8 +149,10 @@ function addToRoom(msgType, dataString) {
     addMessagetoDB(data);
 
     // Escape html special characters, then add linefeeds.
-    content = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    content = content.replace(/\n/g, '<br />');
+    if (content !== undefined) {
+        content = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        content = content.replace(/\n/g, '<br />');
+    }
 
     //color depending on the id string
     var nodeColor = stringToColor(data.author);
@@ -159,15 +160,20 @@ function addToRoom(msgType, dataString) {
     //animations when adding a message
     setTimeout(function () {
         //adds message edge connected to author
-        var edge1 = addEdge(data.author + data.messageId, data.parentMessageId, data.author);
+        var edge1 = addEdge(data.author + data.id, data.parentMessageId, data.author);
         setTimeout(function () {
             //adds message
-            addNode(data.messageId, content, nodeColor, true);
+            if (data.type === "icon") {
+                addIconNode(data);
+            } else {
+                addNode(data.id, content, nodeColor, true);
+            }
+
             //links to parents message if not null
             if (data.parentMessageId !== null) {
-                addEdge(getDate() + '_' + data.parentMessageId, data.messageId, data.parentMessageId);
+                addEdge(getDate() + '_' + data.parentMessageId, data.id, data.parentMessageId);
             }
-            var edge2 = addEdge(getDate() + '_' + data.messageId, data.messageId, data.author);
+            var edge2 = addEdge(getDate() + '_' + data.id, data.id, data.author);
             setTimeout(function () {
                 //remove edge to author
                 removeEdge(edge1);
@@ -181,7 +187,10 @@ function addToRoom(msgType, dataString) {
 }
 
 //adds a node
-function addNode(id, label, style, physics, group) {
+function addNode(id, label, style, group) {
+
+
+
     try {
         // will not try to make an already existing node :
         if (nodes._data[id] === undefined) {
@@ -279,34 +288,17 @@ function drawFromLocalDB() {
             var nodeColor = stringToColor(data.author);
 
             //adds message
-            addNode(data.messageId, data.content, nodeColor, true);
+            if (data.type === "icon") {
+                addIconNode(data);
+            } else {
+                addNode(data.id, data.content, nodeColor, true);
 
-            // will create a node for the author connected to the first message
-            if (!authors.includes(data.author)) {
-                if (nodes._data[data.author] === undefined) {
-                    try {
-                        nodes.add({
-                            id: data.author,
-                            label: data.author,
-                            shape: "icon",
-                            icon: {
-                                face: 'FontAwesome',
-                                code: '\uf007',
-                                size: 50,
-                                color: nodeColor
-                            }
-                        });
-                    }
-
-                    catch (err) {
-                        alert(err);
-                    }
-                }
             }
+
 
             //links to parents message if not null
             if (data.parentMessageId !== null) {
-                addEdge(getDate() + '_' + data.author + '_' + data.parentMessageId, data.parentMessageId, data.messageId)
+                addEdge(getDate() + '_' + data.author + '_' + data.parentMessageId, data.parentMessageId, data.id)
             }
 
         }
