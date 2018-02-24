@@ -82,7 +82,7 @@ const ContextMenu = {
 ContextMenu.menuTypes = {
     "ADD_REACTION": {
         html: null,
-        targetNodeId: null,
+        parentMessageId: null,
         getHtml: function() {
             return this.html;// unneeded?
         },
@@ -103,13 +103,13 @@ ContextMenu.menuTypes = {
 
             const data = {
                 id : getDate() + "_" + getUserId() + "iconNode",
-                authorId: getUserId(),
-                targetNodeId: this.targetNodeId,
+                type: "icon",
+                author: getUserId(),
+                parentMessageId: this.parentMessageId,
                 unicode : unicode
             };
 
-
-            addIconNode(data);
+            addToRoom("icon", JSON.stringify(data));
 
             //sends to db
 
@@ -121,8 +121,8 @@ ContextMenu.menuTypes = {
 
         init: function(data) {
 
-            this.targetNodeId = data.targetNodeId;
-            if(!this.targetNodeId) alert("ContextMenu error targetNodeId not defined, don't know what was clicked on");
+            this.parentMessageId = data.parentMessageId;
+            if(!this.parentMessageId) alert("ContextMenu error parentMessageId not defined, don't know what was clicked on");
 
             this.html =
                 "<h3>Add a reaction</h3>" +

@@ -14,7 +14,7 @@ function connectToDb(DBname) {
 function addMessagetoDB(data) {
 
     var message = {
-        _id: data.messageId,
+        _id: data.id,
         data: data
     };
 
