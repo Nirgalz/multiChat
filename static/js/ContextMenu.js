@@ -100,11 +100,23 @@ ContextMenu.menuTypes = {
             return false;
         },
         mainAction: function (unicode) {
-            const authorId = easyrtc.idToName(selfEasyrtcid);
-            const id = getDate() + "_" + easyrtc.idToName(selfEasyrtcid) + "iconNode";
-            addIconNode(id, "", unicode, stringToColor(authorId));
-            addEdge(getDate() + '_' + this.targetNodeId, id, this.targetNodeId);
-            // TODO IMPORTANT not yet sent over webRTC!
+
+            const data = {
+                id : getDate() + "_" + getUserId() + "iconNode",
+                authorId: getUserId(),
+                targetNodeId: this.targetNodeId,
+                unicode : unicode
+            };
+
+
+            addIconNode(data);
+
+            //sends to db
+
+
+            // sends to RTC
+            sendData("icon", data)
+
         },
 
         init: function(data) {
