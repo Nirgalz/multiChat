@@ -145,9 +145,6 @@ function addToRoom(msgType, dataString) {
     var data = JSON.parse(dataString);
     var content = data.content;
 
-    //saves message to db
-    addMessagetoDB(data);
-
     // Escape html special characters, then add linefeeds.
     if (content !== undefined) {
         content = content.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

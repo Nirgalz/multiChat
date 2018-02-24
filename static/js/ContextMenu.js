@@ -112,7 +112,7 @@ ContextMenu.menuTypes = {
             addToRoom("icon", JSON.stringify(data));
 
             //sends to db
-
+            addMessagetoDB(data);
 
             // sends to RTC
             sendData("icon", data)

@@ -38,6 +38,9 @@ function dispatchIncomingData(id, msgType, dataString) {
 
     var data = JSON.parse(dataString);
     if (data.type === "message" || data.type === "icon") {
+        //saves message to db
+        addMessagetoDB(data);
+        //updates graph
         addToRoom(msgType, dataString);
     } else if (data.type === "syncDb") {
         console.log(data);
@@ -93,8 +96,12 @@ function sendMessage() {
     //will generate message node on client
     addToRoom("message", JSON.stringify(data));
 
+    //saves message to db
+    addMessagetoDB(data);
+
     //empties text field
     document.getElementById('sendMessageText').value = "";
+
 }
 
 //different treatment for vairous outcoming data
@@ -121,7 +128,7 @@ function loginSuccess(easyrtcid) {
 }
 
 function changeroomSuccess() {
-    console.log("successfully left room");
+    //console.log("successfully left room");
 }
 
 
