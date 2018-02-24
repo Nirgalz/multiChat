@@ -69,7 +69,7 @@ function generateGraph() {
 //generates room occupants
 function generateRoomOccupants(roomName, occupants, isPrimary) {
     //generates client's user nodes
-    addUserNode(easyrtc.idToName(selfEasyrtcid), "Me");
+    addUserNode(getUserId(), "Me");
 
     //generates other clients' nodes
     var id;
@@ -85,20 +85,10 @@ function generateRoomOccupants(roomName, occupants, isPrimary) {
  * @param label
  */
 function addUserNode(id, label) {
-    addIconNode(id, label, '\uf007');
-}
 
-/**
- * Adds an 'icon' node.
- * @param id
- * @param label
- * @param unicode
- * @param color - optional, if unspecified generated from id
- */
-function addIconNode(id, label, unicode, color) {
+    var color = stringToColor(id);
+
     if(nodes._data[id] === undefined) {// if node id does not already exist
-
-        color = color ? color : stringToColor(id);// if unspecified
 
         try {
             nodes.add({
@@ -107,7 +97,7 @@ function addIconNode(id, label, unicode, color) {
                 shape: "icon",
                 icon: {
                     face: 'FontAwesome',
-                    code: unicode,
+                    code: '\uf007',
                     size: 50,
                     color: color
                 }
@@ -116,6 +106,35 @@ function addIconNode(id, label, unicode, color) {
             alert(err);
         }
     }
+
+}
+
+/**
+ * Adds an 'icon' node.
+ * @param data
+ */
+function addIconNode(data) {
+    var color = stringToColor(data.authorId);
+
+    if(nodes._data[data.id] === undefined) {// if node id does not already exist
+
+        try {
+            nodes.add({
+                id: data.id,
+                shape: "icon",
+                icon: {
+                    face: 'FontAwesome',
+                    code: data.unicode,
+                    size: 50,
+                    color: color
+                }
+            });
+            addEdge(getDate() + '_' + data.targetNodeId, data.id, data.targetNodeId);
+        } catch (err) {
+            alert(err);
+        }
+    }
+
 }
 
 
