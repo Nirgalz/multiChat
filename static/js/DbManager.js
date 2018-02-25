@@ -5,6 +5,7 @@
 
 //connect to DB
 var db;
+var personalDb = new PouchDB("personalDb");
 function connectToDb(DBname) {
     db = new PouchDB(DBname);
 }
@@ -34,7 +35,7 @@ function addMessagetoDB(data) {
 
 //updates rooms' list
 function updateRoomList(roomName) {
-    var personalDb = new PouchDB("personalDb");
+
 
     personalDb.get('rooms').then(function(doc) {
         console.log(doc);
@@ -74,7 +75,6 @@ function updateRoomList(roomName) {
 //updates room list links
 //TODO: make it using nodes
 function updateRoomListIndex() {
-    var personalDb = new PouchDB("personalDb");
     personalDb.get('rooms').then(function (doc) {
 
         $("#roomList").empty();
