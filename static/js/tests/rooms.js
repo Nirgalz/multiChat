@@ -3,8 +3,9 @@
 
 //rooms interface tests
 
+var presentRoom = null;
+
 function showRooms() {
-    console.log(nodes);
 
     var mynetwork = document.getElementById('cy');
     var x = - mynetwork.clientWidth / 2 + 50;
@@ -15,27 +16,41 @@ function showRooms() {
 
         for (var i = 0 ; i < doc.list.length ; i++) {
 
-            var color = stringToColor(doc.list[i]);
+            if (doc.list[i] !== presentRoom) {
+                var color = stringToColor(doc.list[i]);
 
+                nodes.add({
+                    id: doc.list[i],
+                    x: (x + (i * 70) ),
+                    y: y,
+                    label: doc.list[i],
+                    value: 1,
+                    fixed: true,
+                    //physics:false,
+                    groups: 'rooms',
+                    shape: "icon",
+                    icon: {
+                        face: 'FontAwesome',
+                        code: '\uf086',
+                        size: 50,
+                        color: color
+                    }
+                });
+            }
+        }
+
+        if (presentRoom !== null) {
             nodes.add({
-                id: doc.list[i],
-                x: (x + (i * 70) ),
-                y: y,
-                label: doc.list[i],
-                value: 1,
-                fixed: true,
-                physics:false,
-                groups: 'rooms',
+                id: presentRoom,
+                label: presentRoom,
                 shape: "icon",
                 icon: {
                     face: 'FontAwesome',
                     code: '\uf086',
                     size: 50,
-                    color: color
+                    color: stringToColor(presentRoom)
                 }
             });
-
-
         }
 
     }).catch(function (err) {
@@ -47,7 +62,11 @@ function showRooms() {
         var clickedNodes = nodes.get(ids);
 
         if (clickedNodes[0].groups === 'rooms') {
+            presentRoom = clickedNodes[0].id;
+            showRooms();
             changeRoom(clickedNodes[0].groups);
+
+
         }
 
 
