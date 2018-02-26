@@ -170,6 +170,9 @@ function addToRoom(msgType, dataString) {
             //links to parents message if not null
             if (data.parentMessageId !== null) {
                 addEdge(getDate() + '_' + data.parentMessageId, data.id, data.parentMessageId);
+            }else {
+                //links to room node if no parent message ala topic or new conversation
+                addEdge(getDate() + '_' + data.author + '_' + room, room, data.id)
             }
             var edge2 = addEdge(getDate() + '_' + data.id, data.id, data.author);
             setTimeout(function () {
