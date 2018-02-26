@@ -1,5 +1,14 @@
 "use strict"
 
+var experimental = false;
+
+//activates/deactivates experimental stuff
+$("#experimental").on("click", function () {
+    experimental = !experimental;
+    connect();
+});
+
+
 //toggle console on click
 $("#toggleRoomTools").on("click", function() {
     $("#roomTools").toggle();

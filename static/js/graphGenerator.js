@@ -297,6 +297,9 @@ function drawFromLocalDB() {
             //links to parents message if not null
             if (data.parentMessageId !== null) {
                 addEdge(getDate() + '_' + data.author + '_' + data.parentMessageId, data.parentMessageId, data.id)
+            } else {
+                //links to room node if no parent message ala topic or new conversation
+                addEdge(getDate() + '_' + data.author + '_' + room, room, data.id)
             }
 
         }

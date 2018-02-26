@@ -32,7 +32,7 @@ function connect() {
         easyrtc.connect("multichat", loginSuccess, loginFailure);
         firstConnect = false;
     }
-    console.log(easyrtc.username);
+    //console.log(easyrtc.username);
 
     //pouchDB
     updateRoomListIndex();
@@ -46,7 +46,10 @@ function connect() {
         })
         .html("Send to room: " + room);
 
-
+    //experimental stuff :
+    if (experimental) {
+        showRooms();
+    }
 }
 
 //will send to functions depending on data type
