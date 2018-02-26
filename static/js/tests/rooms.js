@@ -64,7 +64,7 @@ function showRooms() {
         if (clickedNodes[0].groups === 'rooms') {
             presentRoom = clickedNodes[0].id;
             showRooms();
-            changeRoom(clickedNodes[0].groups);
+            changeRoom(clickedNodes[0].id);
 
 
         }
