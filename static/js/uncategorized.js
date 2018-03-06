@@ -30,7 +30,7 @@ const keyListener = (function() {
              */
             let currentValue = this.$el.value;
             if(e.key === "Enter" && currentValue === this.previousValue) {
-                console.log("CTRL+CLICK");
+                sendMessage();
             }
             this.previousValue = currentValue;
         }.bind(html.mainInput));

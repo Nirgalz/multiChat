@@ -40,11 +40,9 @@ function connect() {
     //vis.js
     generateGraph(room);
 
-    $("#sendStuff")
-        .on("click", function () {
-            sendMessage();
-        })
-        .html("Send to room: " + room);
+    const $sendStuff = $("#sendStuff");
+    $sendStuff.on("click", sendMessage);// FIXME some things can be moved outside this function to avoid being called several times unnecessarily
+    $sendStuff.html("Send to room: " + room);
 
     //experimental stuff :
     if (experimental) {
