@@ -18,7 +18,6 @@ const keyListener = (function() {
 
 
     return function() {
-        console.log(html.mainInput);
         // on keyup to be triggered *after* the letter has been inserted into the textarea
         html.mainInput.$el.addEventListener("keyup", function(e) {
             /**

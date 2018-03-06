@@ -53,17 +53,36 @@ function generateGraph() {
         }
     });
 
-    function retrieveClickedNode(properties) {
-        var ids = properties.nodes;
-        var clickedNodes = nodes.get(ids);
-        if (clickedNodes[0] !== undefined) {
-            parentMessageId = clickedNodes[0].id;
-        }
-    }
-
     drawFromLocalDB();
 }
 
+/**
+ * Retrieves the currently selected node's id from the graph.
+ * If several are selected, only the first id will be returned.
+ * @returns {string} the node's id.
+ */
+function getSelectedNodeId() {
+    let idList = network.getSelectedNodes();
+    return idList[0];
+    //return network.findNode(idList[0]);
+}
+// moved outside to be able to call it from anywhere...
+function retrieveClickedNode(properties) {
+    var ids = properties.nodes;
+    var clickedNodes = nodes.get(ids);
+    if (clickedNodes[0] !== undefined) {
+        rememberClickedNode(clickedNodes[0].id);
+    }
+}
+
+/**
+ * Store a node's id in the variable that seems to be meant to store it.
+ * Called for example when a node is clicked on, to remember the node that was selected.
+ * @param {string} nodeId
+ */
+function rememberClickedNode(nodeId) {
+    parentMessageId = nodeId;
+}
 
 
 //generates room occupants
@@ -165,6 +184,20 @@ function addToRoom(msgType, dataString) {
                 addIconNode(data);
             } else {
                 addNode(data.id, content, nodeColor, true);
+
+                /*
+                * The basic idea here is to select nodes as they are created, so you don't have to
+                * manually click them to respond. However, we only select if the previous response
+                * was already selected - that way incoming messages don't forcefully grab the user's
+                * reply when he was doing something totally different.
+                */
+                const selectedNodeId = getSelectedNodeId();
+                const parentWasSelected = (selectedNodeId !== undefined) && (selectedNodeId === data.parentMessageId);
+                if(parentWasSelected) {// TODO don't select if something else is going on (for example a contextMenu)?
+                    // select created node to facilitate chaining of messages
+                    network.setSelection({nodes: [network.findNode(data.id)]});
+                    rememberClickedNode(data.id);
+                }
             }
 
             //links to parents message if not null
