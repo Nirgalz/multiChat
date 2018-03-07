@@ -24,7 +24,7 @@ function connect() {
 
 
     connectToRoom(room);
-    easyrtc.setPeerListener(dispatchIncomingData);
+    easyrtc.setPeerListener(dispatchIncomingData);// set callback function on reception of message
     easyrtc.setRoomOccupantListener(generateRoomOccupants);
 
 
@@ -40,11 +40,9 @@ function connect() {
     //vis.js
     generateGraph(room);
 
-    $("#sendStuff")
-        .on("click", function () {
-            sendMessage();
-        })
-        .html("Send to room: " + room);
+    const $sendStuff = $("#sendStuff");
+    $sendStuff.on("click", sendMessage);// FIXME some things can be moved outside this function to avoid being called several times unnecessarily
+    $sendStuff.html("Send to room: " + room);
 
     //experimental stuff :
     if (experimental) {
@@ -105,7 +103,7 @@ function sendMessage() {
         id: generateMessageId(getUserId(), text),
         author: selfEasyrtcid,
         date: getDate(),
-        parentMessageId: getParentMessageId(),
+        parentMessageId: getSelectedNodeId(),//getParentMessageId(),// makes it dynamic.
         content: text
     };
 
@@ -120,7 +118,6 @@ function sendMessage() {
 
     //empties text field
     document.getElementById('sendMessageText').value = "";
-
 }
 
 //different treatment for vairous outcoming data
