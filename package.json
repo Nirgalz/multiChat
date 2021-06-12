@@ -4,13 +4,14 @@
   "author": "some guys",
   "description": "weird recipe for a weird taste",
   "scripts": {
-    "run": "node server.js"
+    "start": "npm run server",
+    "server": "node server.js"
   },
   "dependencies": {
-    "easyrtc": "^1.1.0",
-    "express": "latest",
-    "serve-static": "latest",
-    "socket.io": "latest"
+    "express": "^4.17.1",
+    "open-easyrtc": "^2.0.9",
+    "serve-static": "^1.14.1",
+    "socket.io": "^2.4.0"
   },
   "license": "FFA",
   "engines": {
