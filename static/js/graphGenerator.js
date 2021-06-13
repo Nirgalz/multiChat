@@ -116,8 +116,9 @@ function addUserNode(id, label) {
                 label: label,
                 shape: "icon",
                 icon: {
-                    face: 'FontAwesome',
-                    code: '\uf007',
+                    weight: "900",
+                    face: "'Font Awesome 5 Free'",
+                    code: '\uF007',
                     size: 50,
                     color: color
                 }
@@ -143,7 +144,8 @@ function addIconNode(data) {
                 id: data.id,
                 shape: "icon",
                 icon: {
-                    face: 'FontAwesome',
+                    weight: "900",
+                    face: "'Font Awesome 5 Free'",
                     code: data.unicode,
                     size: 50,
                     color: color

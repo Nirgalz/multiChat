@@ -132,10 +132,10 @@ ContextMenu.menuTypes = {
                 "</div>";
         },
         icons: {
-            "smile-o":      "\uf118",
-            "meh-o":         "\uf11a",
-            "frown-o":  "\uf119",
-            "handshake-o":  "\uf2b5",
+            "smile":      "\uf118",
+            "meh":         "\uf11a",
+            "frown":  "\uf119",
+            "handshake":  "\uf2b5",
             "bath":         "\uf2cd",
             "blind":        "\uf29d",
             "copyright":    "\uf1f9",
