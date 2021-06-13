@@ -8,6 +8,11 @@ $("#experimental").on("click", function () {
     connect();
 });
 
+$(document).on('mousemove', function (e) {
+    var canvasPosition = network.DOMtoCanvas({x: e.clientX, y: e.clientY})
+    nodes.update({id: getUserId(), x: canvasPosition.x + 30, y: canvasPosition.y + 30})
+});
+
 
 //toggle console on click
 $("#toggleRoomTools").on("click", function() {

@@ -115,6 +115,7 @@ function addUserNode(id, label) {
                 id: id,
                 label: label,
                 shape: "icon",
+                physics: false,
                 icon: {
                     weight: "900",
                     face: "'Font Awesome 5 Free'",
